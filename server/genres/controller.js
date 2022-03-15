@@ -8,7 +8,7 @@ async function createGenre(req, res){
         const newGenre = await pool.query(queries.createGenre,
         [genre.name, genre.description]
         );
-        res.json("Genre has been created");
+        res.status(201).send("Genre has been created");
     } catch (err){
         console.error(err.message);
     }
@@ -18,7 +18,7 @@ async function createGenre(req, res){
 async function getGenres(req, res){
     try{
         const allGenres = await pool.query(queries.getGenres);
-        res.json(allGenres.rows);
+        res.status(200).json(allGenres.rows);
     } catch (err){
         console.error(err.message);
     }
@@ -31,7 +31,7 @@ async function getGenre(req, res){
         const genre = await pool.query(queries.getGenreName,
         [idGenre]
         );
-        res.json(genre.rows[0]);
+        res.status(200).json(genre.rows[0]);
     } catch (err){
         console.error(err.message)
     }
@@ -45,7 +45,7 @@ async function updateGenre(req, res){
         const updatedGenre = await pool.query(queries.updateGenre,
         [genre.name, genre.description , idGenre]
         );
-        res.json("Genre has been updated")
+        res.status(200).send("Genre has been updated")
     } catch (err){
         console.error(err.message)
     }
@@ -58,7 +58,7 @@ async function deleteGenre(req, res){
         const deletedGenre = await pool.query(queries.deleteGenre,
         [genreID]
         );
-        res.json("Genre has been deleted");
+        res.status(200).send("Genre has been deleted");
     } catch (err){
         console.error(err.message);
     }

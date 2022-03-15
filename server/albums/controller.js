@@ -8,7 +8,7 @@ async function createAlbum(req, res){
         const newAlbum = await pool.query(queries.createAlbum,
         [album.title, album.release, album.artist]
         );
-        res.json("Album has been created");
+        res.status(201).send("Album has been created");
     } catch (err){
         console.error(err.message);
     }
@@ -18,20 +18,20 @@ async function createAlbum(req, res){
 async function getAlbums(req, res){
     try{
         const allAlbums = await pool.query(queries.getAlbums);
-        res.json(allAlbums.rows);
+        res.status(200).json(allAlbums.rows);
     } catch (err){
         console.error(err.message);
     }
 }
 
-//get album by his is
+//get album by his id
 async function getAlbumById(req, res){
     try{
         const idAlbum = req.params.id;
         const album = await pool.query(queries.getAlbumById,
         [idAlbum]
         );
-        res.json(album.rows[0]);
+        res.status(200).json(album.rows[0]);
     } catch (err){
         console.error(err.message)
     }
@@ -45,7 +45,7 @@ async function updateAlbum(req, res){
         const updatedAlbum = await pool.query(queries.updateAlbum,
         [album.title, album.release , album.artist, idAlbum]
         );
-        res.json("Album has been updated");
+        res.status(200).send("Album has been updated");
     } catch (err){
         console.error(err.message);
     }
@@ -58,7 +58,7 @@ async function deleteAlbum(req, res){
         const deletedAlbum = await pool.query(queries.deleteAlbum,
         [idAlbum]
         );
-        res.json("Album has been deleted");
+        res.status(200).send("Album has been deleted");
     } catch (err){
         console.error(err.message);
     }

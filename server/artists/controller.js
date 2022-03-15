@@ -8,7 +8,7 @@ async function createArtist(req, res){
         const newArtist = await pool.query(queries.createArtist,
         [artist.name, artist.other_names, artist.genre]
         );
-        res.json("Artist has been created");
+        res.status(201).send("Artist has been created");
     } catch (err){
         console.error(err.message);
     }
@@ -18,7 +18,7 @@ async function createArtist(req, res){
 async function getArtists(req, res){
     try{
         const allArtist = await pool.query(queries.getArtists);
-        res.json(allArtist.rows);
+        res.status(200).json(allArtist.rows);
     } catch (err){
         console.error(err.message);
     }
@@ -31,7 +31,7 @@ async function getArtistByID(req, res){
         const artist = await pool.query(queries.getArtistByID,
         [idArtist]
         );
-        res.json(artist.rows[0]);
+        res.status(200).json(artist.rows[0]);
     } catch (err){
         console.error(err.message)
     }
@@ -45,7 +45,7 @@ async function updateArtist(req, res){
         const updatedArtist = await pool.query(queries.updateArtist,
         [artist.name, artist.other_names , artist.genre, idArtist]
         );
-        res.json("Artist has been updated");
+        res.status(200).send("Artist has been updated");
     } catch (err){
         console.error(err.message);
     }
@@ -58,7 +58,7 @@ async function deleteArtist(req, res){
         const deletedArtist = await pool.query(queries.deleteArtist,
         [idArtist]
         );
-        res.json("Artist has been deleted");
+        res.status(200).send("Artist has been deleted");
     } catch (err){
         console.error(err.message);
     }
