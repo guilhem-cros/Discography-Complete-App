@@ -8,6 +8,7 @@
             <label id="genreDescLab" for="genreDesc" placeholder="A little description of the genre">Description for the genre : </label>
             <textarea id="genreDesc" name="genreDesc"></textarea>
             <CoversSlideshow id="slideshow"/> 
+            <button class="submitButt">Submit</button>
     </form>
     </div>
 </template>
@@ -95,6 +96,29 @@ body{
   outline: none;
 }
 
+.submitButt{
+  grid-row : 5;
+  grid-column: 1;
+  background-color: #3f3f3c;
+  border-radius: 4px;
+  border: rgb(104, 99, 99) 1px solid;
+  color: white;
+  margin-top: 2%;
+  padding-left : 0;
+  padding-right : 0;
+  padding-bottom: 1%;
+  padding-top: 1%;
+  width: 17%;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+}
+
+.submitButt:hover{
+  cursor: pointer;
+  opacity: 0.8;
+}
+
 
 
 #genreName::placeholder, #genreDesc::placeholder{
@@ -122,7 +146,7 @@ body{
 
   #slideshow{
     grid-column: 1;
-    grid-row: 5;
+    grid-row: 6;
     margin-top: 10%;
     margin-bottom : 5%;
   }

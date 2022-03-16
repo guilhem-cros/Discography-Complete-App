@@ -27,10 +27,12 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color : black;
+  height: 100%;
 }
 
 body{
   margin: 0;
+  height: 100%;
 }
 
 </style>
