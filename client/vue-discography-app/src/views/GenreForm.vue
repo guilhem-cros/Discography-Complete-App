@@ -6,21 +6,21 @@
             <label id="genreNameLab" for="genreName">Name of the genre : </label>
             <input id="genreName" type="text" name="genreName" placeholder="Name of the genre">
             <label id="genreDescLab" for="genreDesc" placeholder="A little description of the genre">Description for the genre : </label>
-            <textarea id="genreDesc" name="genreDesc"></textarea> 
-            <img src="" alt="randomCover" id="randomCover">
+            <textarea id="genreDesc" name="genreDesc"></textarea>
+            <CoversSlideshow id="slideshow"/> 
     </form>
     </div>
 </template>
 
 <script>
+import CoversSlideshow from '../components/CoversSlideshow.vue';
+
 export default {
   setup(){
 
   },
   name: 'GenreFormView',
-  components: {
-
-  }
+  components: { CoversSlideshow }
 }
 
 </script>
@@ -49,6 +49,7 @@ body{
 .genreForm{
   margin-left : 5%;
   display : grid;
+  grid-auto-columns: minmax(0, 1fr);
 }
 
 #genreNameLab{
@@ -57,12 +58,14 @@ body{
 
 #genreName{
   grid-row: 2;
-  width : 80%
+  width : 80%;
+  height:2.4em;
 }
 
-#randomCover{
+#slideshow{
   grid-column: 2;
-  grid-row: 2/4;
+  grid-row: 1/5;
+  text-align: center;
 }
 
 #genreDescLab{
@@ -72,11 +75,12 @@ body{
 #genreDesc{
   grid-row: 4;
   width : 80%;
+  height: 5em;
 }
 
 #genreName, #genreDesc, #genreNameLab, #genreDescLab{
   font-size : 14px;
-  line-height: 1.6em;
+  line-height: 1.4em;
   font-weight: bold;
   border-radius : 3px;
   margin: 1%;
@@ -85,11 +89,59 @@ body{
 
 #genreDescLab, #genreNameLab{
   margin-top: 2%;
+}
+
+#genreName, #genreDesc{
   outline: none;
 }
 
+
+
 #genreName::placeholder, #genreDesc::placeholder{
   color: grey;
+}
+
+@media screen and (max-width: 900px){
+  .form{
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+}
+
+@media screen and (max-width: 650px){
+  #genreNameLab{
+    grid-row : 1;
+    grid-column: 1;
+  }
+
+  #genreName{
+    grid-row: 2;
+    grid-column: 1;
+    width : 90%
+  }
+
+  #slideshow{
+    grid-column: 1;
+    grid-row: 5;
+    margin-top: 10%;
+    margin-bottom : 5%;
+  }
+
+  #genreDescLab{
+    grid-row: 3;
+    grid-column: 1;
+  }
+
+  .genreForm{
+    margin-left : 2%;
+    margin-right: 2%;
+  }
+
+  #genreDesc{
+    grid-row: 4;
+    grid-column: 1;
+    width : 90%;
+  }
 }
 
 </style>
