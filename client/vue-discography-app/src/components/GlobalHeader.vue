@@ -5,7 +5,7 @@
       <img src="../assets/search.png" width="auto" height="24px" alt="research button" id="research_butt">
     </div>
     <div class="title">
-      <h1 id="title">Title</h1>
+      <h1 id="title">音楽</h1>
     </div>
     <div class="sign_panel">
       <div>

@@ -12,6 +12,9 @@
 //Gestion du carousel
 
 export default {
+  setup(){
+
+  },
   name: "CoversSlideshow",
   data() {
     return {

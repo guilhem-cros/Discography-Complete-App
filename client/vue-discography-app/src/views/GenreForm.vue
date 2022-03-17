@@ -4,11 +4,11 @@
         <p id="reqInfo">* required</p>
         <form class="genreForm">
             <label id="genreNameLab" for="genreName">Name of the genre : </label>
-            <input id="genreName" type="text" name="genreName" placeholder="Name of the genre">
+            <input id="genreName" type="text" name="genreName" v-model="name" placeholder="Name of the genre">
             <label id="genreDescLab" for="genreDesc" placeholder="A little description of the genre">Description for the genre : </label>
-            <textarea id="genreDesc" name="genreDesc"></textarea>
+            <textarea id="genreDesc" name="genreDesc" v-model="description"></textarea>
             <CoversSlideshow id="slideshow"/> 
-            <button class="submitButt">Submit</button>
+            <button class="submitButt" @click="submitDatas">Submit</button>
     </form>
     </div>
 </template>
@@ -21,7 +21,21 @@ export default {
 
   },
   name: 'GenreFormView',
-  components: { CoversSlideshow }
+  data(){
+    return{
+      name : "",
+      description : ""
+    }
+  },
+  components: { CoversSlideshow },
+  methods: {
+    submitDatas(){
+      
+    }
+  },
+  props :{
+    
+  },
 }
 
 </script>
