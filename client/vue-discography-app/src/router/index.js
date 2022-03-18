@@ -16,10 +16,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
-    path: '/genres/submit',
-    name : 'genreForm',
-    component: () => import('../views/GenreForm.vue')
-  }
+    path: '/genres',
+    name : 'genres',
+    component: () => import('../views/GenreView.vue'),
+    props : true
+  },
 ]
 
 const router = createRouter({

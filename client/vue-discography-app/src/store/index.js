@@ -1,16 +1,17 @@
-import Vue from "vue";
-import Vuex from "vuex";
 
-Vue.use(Vuex);
+import Vuex from "vuex";
 
 export default new Vuex.Store({
     state : {
-        apiURL : ""
+        apiURL : "http://localhost:5000/"
     },
     mutations :{
 
     },
-    actions:  {},
+    actions:  {
+    },
     modules : {},
-    getters : {}
+    getters : {
+        getApiURL: state => state.apiURL,
+    }
 });

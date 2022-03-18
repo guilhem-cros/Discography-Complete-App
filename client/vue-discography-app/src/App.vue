@@ -1,5 +1,7 @@
 <template>
+  <AlertBox/>
   <GlobalHeader />
+
   <!--
   <nav>
     <router-link to="/">Home</router-link> |
@@ -11,11 +13,12 @@
 
 <script>
 import GlobalHeader from './components/GlobalHeader.vue';
+import AlertBox from './components/AlertBox.vue'
 
 export default {
     setup() {
     },
-    components: { GlobalHeader }
+    components: { GlobalHeader, AlertBox}
 }
 </script>
 
@@ -33,6 +36,7 @@ export default {
 body{
   margin: 0;
   height: 100%;
+  background-color: white;
 }
 
 </style>

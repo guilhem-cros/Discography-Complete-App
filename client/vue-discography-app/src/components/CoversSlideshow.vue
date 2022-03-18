@@ -1,7 +1,7 @@
 <template >
   <div>
     <div name="fade" tag="div">
-      <img class="sliding" :src="currImg"/>
+      <img class="sliding" :src="currImg" alt=""/>
     </div>
   </div>
 
