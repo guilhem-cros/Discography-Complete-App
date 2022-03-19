@@ -21,54 +21,53 @@ import CoversSlideshow from './CoversSlideshow.vue';
 import axios from 'axios';
 
 export default {
-  setup(){
-
-  },
   name: 'GenreForm',
   data(){
     return {
-      name : this.genre.name,
-      desc : this.genre.desc,
-      updates : false
+      name : this.genre.name, //name of the current genre : empty if it's a creation
+      desc : this.genre.desc, //desc of the current genre : empty if it's a creation
+      updates : false //boolean describing if updates has been made on the db with the form
     }
   },
   components: { CoversSlideshow},
   methods: {
+    //push the datas on the db : create if it's a creation, update if it's an update
     async submitDatas(){
       let datas = { name : this.name, description : this.desc};
       if(this.name.length >= 3){
         let url = this.$store.getters.getApiURL + "genres";
         if(this.creation){
-          await axios.post(url, datas).catch(function (error) {
-            if (error.response) {
-              console.log(error.response.data);
-              console.log(error.response.status);
-              console.log(error.response.headers);
-            }}).then(
+          await axios.post(url, datas).catch(function (error) { //request and error handling during request
+            let message = error.message;
+            this.$emit('error', message); //emit error to display and alert
+          }).then(
           this.$emit("updated", {name : this.name, message : "created"}));
         }
         else{
-          await axios.put(url + '/' + this.genre.id, datas).catch(function (error) {
-            if (error.response) {
-              console.log(error.response.data);
-              console.log(error.response.status);
-              console.log(error.response.headers);
-            }}).then(
-          this.$emit("updated", {name : this.name, message : "updated"}));
+          await axios.put(url + '/' + this.genre.id, datas).catch(function (error) { // request and error handling during request
+            let message = error.message
+            this.$emit('error', message); //emit error to dispay an alert
+          }).then(
+          this.$emit("updated", {name : this.name, message : "updated"})); //emit updated to display a succes alert
+          this.$emit('goBackAndUpdate');
         }
+        //resetting values
         this.name = "";
         this.desc = "";
+        //update has been made -> true
         this.updates = true
       }
-    },
+    }, 
+    //emit a message to hide form and display list
     goBack(){
+      //if some updates have been made
       if(this.updates){
         this.$emit('goBackAndUpdate');
       }
       else{
         this.$emit('goBack');
       }
-      this.updates = false;
+      this.updates = false; //resetting the update param
     }
   },
   props : {
@@ -76,6 +75,7 @@ export default {
     creation : Boolean,
   },
   computed : {
+    //title of the page : depends if it's a creation or an update form
     title() {
       return this.creation ? "Add a genre of music :" : "Update the genre :";
     },
@@ -85,11 +85,6 @@ export default {
 </script>
 
 <style>
-
-body{
-  background-color: #111110;
-}
-
 
 .form{
   color : white;

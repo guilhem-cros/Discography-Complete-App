@@ -1,5 +1,4 @@
 <template>
-  <AlertBox/>
   <GlobalHeader />
 
   <!--
@@ -13,12 +12,10 @@
 
 <script>
 import GlobalHeader from './components/GlobalHeader.vue';
-import AlertBox from './components/AlertBox.vue'
+
 
 export default {
-    setup() {
-    },
-    components: { GlobalHeader, AlertBox}
+    components: { GlobalHeader, }
 }
 </script>
 

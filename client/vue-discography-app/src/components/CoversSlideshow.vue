@@ -9,31 +9,29 @@
 
 <script>
 
-//Gestion du carousel
+//SlideShow
 
 export default {
-  setup(){
-
-  },
   name: "CoversSlideshow",
   data() {
     return {
-      images: [
+      images: [ //url of the images in the slideShow
         require("../assets/covers/astroworld.jpg"),
         require("../assets/covers/damn.jpg"),
         require("../assets/covers/Vreel3.jpg"),
       ],
       timer: null,
-      currentIndex: 0,
-      currImg : "",
+      currentIndex: 0, //index of the current image
+      currImg : "", //url of the current img 
     };
   },
-
+  //launch the slideshow
   mounted: function() {
     this.startSlide();
   },
 
   methods: {
+    //make change the url of the displayed image every 5 secs
     startSlide: async function() {
       this.currImg = this.currentImg;
       if(this.currentIndex>=2){
@@ -47,7 +45,6 @@ export default {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
   },
-
   computed: {
     currentImg: function() {
       return this.images[this.currentIndex];

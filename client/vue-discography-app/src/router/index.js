@@ -19,7 +19,17 @@ const routes = [
     path: '/genres',
     name : 'genres',
     component: () => import('../views/GenreView.vue'),
-    props : true
+  },
+  {
+    path: '/artists',
+    name : 'artists',
+    component: () => import('../views/ArtistView.vue'),
+  },
+  //catchall 404 
+  {
+    path : '/:catchAll(.*)',
+    name : 'notFound',
+    component: () => import('../views/NotFound.vue'),
   },
 ]
 

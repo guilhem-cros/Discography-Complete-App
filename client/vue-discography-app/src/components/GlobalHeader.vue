@@ -21,16 +21,14 @@
 import NavBar from './NavBar.vue';
 
 export default {
-  setup() {
-    
-  },
-  components: { NavBar }
+  components: { NavBar },
+  name : "GlobalHeader"
 }
 
 </script>
 
 
-<style scoped>
+<style>
 .head{
   display: grid;
   background-color: #FFE469;
