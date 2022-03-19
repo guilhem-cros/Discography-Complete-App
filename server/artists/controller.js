@@ -64,6 +64,19 @@ async function deleteArtist(req, res){
     }
 }
 
+//get all the albums of an artist
+async function getArtistAlbums(req, res){
+    try{
+        const idArtist = req.params.id;
+        const albums = await pool.query(queries.getAllAlbums,
+        [idArtist]
+        );
+        res.status(200).json(albums.rows);
+    } catch (err){
+        console.error(err.message);
+    }
+}
 
 
-module.exports = {createArtist, getArtists, getArtistByID, updateArtist, deleteArtist};
+
+module.exports = {createArtist, getArtists, getArtistByID, updateArtist, deleteArtist, getArtistAlbums};

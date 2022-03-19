@@ -18,4 +18,7 @@ app.put("/:id", functions.updateArtist);
 //delete artist
 app.delete("/:id", functions.deleteArtist);
 
+//get artist's albums
+app.get("/albums/:id", functions.getArtistAlbums);
+
 module.exports = app;
