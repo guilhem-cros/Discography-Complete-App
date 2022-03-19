@@ -3,7 +3,7 @@
         <h2>{{ this.title }}</h2>
         <p id="reqInfo">* required</p>
         <form class="genreForm" @submit.prevent="submitDatas">
-            <label id="genreNameLab" for="genreName">Name of the genre : </label>
+            <label id="genreNameLab" for="genreName">*Name of the genre :</label>
             <input id="genreName" type="text" name="genreName" v-model="name" placeholder="Name of the genre"  minlength="3" required>
             <label id="genreDescLab" for="genreDesc" placeholder="A little description of the genre">Description for the genre : </label>
             <textarea id="genreDesc" name="genreDesc" v-model="desc"></textarea>
@@ -57,7 +57,7 @@ export default {
         //update has been made -> true
         this.updates = true
       }
-    }, 
+    },
     //emit a message to hide form and display list
     goBack(){
       //if some updates have been made

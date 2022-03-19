@@ -12,19 +12,20 @@
     </div>
   </div>
   </div>
-  <ArtistDetails :artistDatas="this.currentArtist" v-if="this.displayIndex == 1"/>
+  <ArtistForm :artist="{}" :creation="true"/>
   <AlertBox :alertIndex="alertIndex" :message="message" @alertClosed="resetAlert"/>
 </template>
 
 <script>
 import AlertBox from '../components/AlertBox.vue';
 import ErrorComponent from '../components/RequestError.vue'
-import ArtistDetails from '../components/ArtistDetails.vue'
+import ArtistForm from '../components/ArtistForm.vue'
 import axios from 'axios';
+import router from '../router/index'
 
 export default ({
     name : 'ArtistView',
-    components: {AlertBox, ErrorComponent, ArtistDetails},
+    components: {AlertBox, ErrorComponent, ArtistForm},
     data(){
         return{
             listArtists : [], //list of all artists
@@ -71,8 +72,7 @@ export default ({
       },
       showDetails(id){
         this.currentArtist = this.listArtists[id];
-        console.log(this.currentArtist)
-        this.displayIndex = 1;
+        router.push({ name: 'artistDetails', params: { id: this.currentArtist.id_artist } })
       }
     },
     mounted(){
@@ -103,6 +103,7 @@ export default ({
   padding-bottom: 1%;
   border-radius: 5px;
   display : grid;
+  grid-auto-columns: minmax(0, 1fr);
 }
 
 .col_0{
@@ -123,6 +124,7 @@ export default ({
 .artistList{
   margin-left : 10%;
   margin-right: 10%;
+  margin-bottom: 5%;
 }
 
 #artistTitle{
@@ -135,6 +137,7 @@ export default ({
   margin: 4%;
   border-radius: 4px;
   padding : 1%;
+  max-height: none;
 }
 
 .artist:hover{
@@ -147,11 +150,81 @@ export default ({
 
 .artistName{
   font-weight: bold;
+  font-size : 16px;
 }
 
 .pfp{
+  background-position: center;
+  background-size: cover;
   margin : 1%;
-  border-radius: 50px;
+  border-radius: 50%;
+  border : 2px solid #404341;
 }
 
+@media screen and (max-width: 1300px){
+  .listArtists{
+    padding :0;
+  }
+  .artist{
+    margin-left : 3%;
+    margin-right: 3%;
+  }
+
+  .artistList{
+    margin-left : 5%;
+    margin-right: 5%;
+  }
+}
+
+@media screen and (max-width: 1050px) {
+  .artistList{
+    margin-left : 2%;
+    margin-right: 2%;
+  }
+}
+
+@media screen and (max-width: 950px) {
+  .artistList{
+    margin-left : 1%;
+    margin-right: 1%;
+  }
+}
+
+@media screen and (max-width: 950px) {
+  .col_2{
+    grid-column: 1;
+  }
+
+  .col_3{
+    grid-column: 2;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .col_1{
+    grid-column: 1;
+  }
+  
+  .col_2{
+    grid-column: 1;
+  }
+
+  .col_3{
+    grid-column: 1;
+  }
+
+  .artistList{
+    margin-left : 5%;
+    margin-right: 5%;
+  }
+
+  .listArtists{
+    padding-right: 2%;
+    padding-left: 2%;
+  }
+
+  .artist{
+    margin: 2%;
+  }
+}
 </style>

@@ -82,6 +82,7 @@ export default {
   font-weight: bold;
   font-size: 20px;
   opacity : 0.8;
+  margin-left : 3%;
 }
 
 .alert-success{

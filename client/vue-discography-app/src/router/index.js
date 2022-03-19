@@ -25,6 +25,12 @@ const routes = [
     name : 'artists',
     component: () => import('../views/ArtistView.vue'),
   },
+  {
+    path: '/artists/details/:id',
+    name : 'artistDetails',
+    component: () => import('../views/ArtistDetailsView.vue'),
+    props : true
+  },
   //catchall 404 
   {
     path : '/:catchAll(.*)',
