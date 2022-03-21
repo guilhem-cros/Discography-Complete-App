@@ -2,6 +2,7 @@
   <nav>
     <router-link :to="{name : 'home'}">Home</router-link>  |
     <router-link :to="{name : 'artists'}">Artists</router-link> | 
+    <router-link :to="{name: 'album',  props:{idAlbum : 1}}">Albums</router-link> |
     <router-link :to="{name: 'genres'}">Genres</router-link> |
     <!--
     <router-link :to="{name: 'genreForm', params: {create : false, id : 1}}">UpdateForm</router-link>|
