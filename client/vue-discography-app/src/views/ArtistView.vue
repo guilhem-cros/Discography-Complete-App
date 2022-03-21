@@ -1,18 +1,18 @@
 <template>
   <ErrorComponent v-if="error" :mess="this.errMessage"/>
-  <div class="artistList" v-if="this.displayIndex==0">
+  <div class="artistList" v-if="this.displayList">
   <div class="titleDiv">
     <h2 id="artistTitle">All artists : </h2>
-    <div class="addButt">Add new</div>
+    <div class="addB" @click="openForm">Add new</div>
   </div>
   <div class="listArtists">
     <div v-for="(artist, index) in this.listArtists" :key="artist.id_artist" class="artist" :class="'col_' + index%4" @click="showDetails(index)">
-      <img :src="this.makePfp(artist.id_artist)" :alt="artist.name + '_picture'" width="100" class="pfp">
+      <img :src="this.getImg(artist)" :alt="artist.name + '_picture'" class="pfp">
       <p class="artistName">{{ artist.name }}</p>
     </div>
   </div>
   </div>
-  <ArtistForm :artist="{}" :creation="true"/>
+  <ArtistForm :artist="{}" :create="true" v-else @goBack="showList" @updateList="updateList" @updated="showSuccess" @error="showError"/>
   <AlertBox :alertIndex="alertIndex" :message="message" @alertClosed="resetAlert"/>
 </template>
 
@@ -29,12 +29,13 @@ export default ({
     data(){
         return{
             listArtists : [], //list of all artists
-            displayIndex : 0, //index of what is currently displayed in the view
+            displayList : true, //index of what is currently displayed in the view
             alertIndex : 0, //index of the alert notif : 0 = hide alerts
             message : "", //message for the alerts notifications
             error : false, //boolean : true if and error happens during loading datas,
             errMessage : "",//message send during the error
-            currentArtist : {}
+            currentArtist : {},
+            imgSrc : this.$store.getters.getApiURL,
         }
     },
     methods:{
@@ -58,22 +59,38 @@ export default ({
           this.message ="";
       },
       //get the image at src if it exists, get the default pfp instead
-      makePfp(id){
-        try{
-            return require("../assets/artists/"+id+"_pfp.jpg"); //search a .jpg file
-        } catch (err){
-            try{
-                return require("../assets/artists/"+id+"_pfp.png"); //search a .png file
-            } catch (error){
-                return require("../assets/artists/default.png"); //get the default pfp file
-            }
-        }
-
-      },
       showDetails(id){
         this.currentArtist = this.listArtists[id];
         router.push({ name: 'artistDetails', params: { id: this.currentArtist.id_artist } })
-      }
+      },
+      getImg(a){
+        if(a.image === undefined || a.image == null || a.image.length == 0){
+          return require("../assets/artists/default.png");
+        }
+        else{
+          return this.imgSrc +  a.image;
+        }
+      },
+      openForm(){
+        this.displayList=false;
+      },
+      showList(){
+        this.displayList=true;
+      },
+      async updateList(){
+        this.listArtists = [];
+        await this.getListArtists().then(this.displayList=true);
+      },
+      //display success alert
+      showSuccess(values){
+        this.message = "The artist " + values.name + " has been " + values.message + "."
+        this.alertIndex = 1;
+      },
+      //display an alert "error" showing 'message'
+      showError(message){
+          this.message = message;
+          this.alertIndex = 4;
+      },
     },
     mounted(){
       this.getListArtists();
@@ -138,6 +155,7 @@ export default ({
   border-radius: 4px;
   padding : 1%;
   max-height: none;
+  text-align: center;
 }
 
 .artist:hover{
@@ -151,6 +169,8 @@ export default ({
 .artistName{
   font-weight: bold;
   font-size : 16px;
+  max-width: 100%;
+  max-height: none;
 }
 
 .pfp{
@@ -159,6 +179,40 @@ export default ({
   margin : 1%;
   border-radius: 50%;
   border : 2px solid #404341;
+  width: 100px;
+  object-fit: cover;
+  height: 100px;
+}
+
+.addB:hover{
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.addB{
+  background-color: white;
+  width : 10%;
+  color: #1F9911;
+  font-size : 16px;
+  font-weight: bold;
+  padding : 10px;
+  border-radius: 3px;
+  margin-left : 85%;
+}
+
+.backB{
+  margin-top : 5%;
+  text-align: center;
+  font-size : 18px;
+  padding-bottom :0px;
+  border : solid, 1px, grey;
+  color : #FFE469;
+  text-decoration: underline;
+}
+
+.backB:hover{
+  cursor: pointer;
+  color : gold;
 }
 
 @media screen and (max-width: 1300px){
@@ -183,14 +237,21 @@ export default ({
   }
 }
 
-@media screen and (max-width: 950px) {
+@media screen and (max-width: 1050px) {
   .artistList{
     margin-left : 1%;
     margin-right: 1%;
   }
+  .artistName{
+    padding : 0;
+  }
+  .addB{
+    width : 15%;
+    margin-left: 80%;
+  }
 }
 
-@media screen and (max-width: 950px) {
+@media screen and (max-width: 800px) {
   .col_2{
     grid-column: 1;
   }
@@ -198,13 +259,16 @@ export default ({
   .col_3{
     grid-column: 2;
   }
+  .addB{
+    width : 35%;
+    margin-left: 55%;
+  }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 350px) {
   .col_1{
     grid-column: 1;
   }
-  
   .col_2{
     grid-column: 1;
   }

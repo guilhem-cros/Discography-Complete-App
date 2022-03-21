@@ -48,8 +48,8 @@ export default {
             let message = error.message
             this.$emit('error', message); //emit error to dispay an alert
           }).then(
-          this.$emit("updated", {name : this.name, message : "updated"})); //emit updated to display a succes alert
-          this.$emit('goBackAndUpdate');
+          this.$emit("updated", {name : this.name, message : "updated"}), //emit updated to display a succes alert
+          this.$emit('goBackAndUpdate'));
         }
         //resetting values
         this.name = "";
