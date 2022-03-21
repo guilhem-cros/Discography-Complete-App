@@ -5,9 +5,17 @@ const pool = require("../db");
 async function createArtist(req, res){
     try{
         const artist = req.body;
-        const newArtist = await pool.query(queries.createArtist,
-        [artist.name, artist.other_names, artist.genre]
-        );
+        if(req.file !== undefined){
+            const img = "artists/" + req.file.filename;
+            const newArtist = await pool.query(queries.createArtist,
+                [artist.name, artist.other_names , artist.genre, img]
+            );
+        }
+        else{
+            const newArtist = await pool.query(queries.createArtist,
+                [artist.name, artist.other_names , artist.genre, null]
+            );
+        }
         res.status(201).send("Artist has been created");
     } catch (err){
         console.error(err.message);
@@ -42,9 +50,17 @@ async function updateArtist(req, res){
     try{
         const idArtist = req.params.id;
         const artist = req.body;
-        const updatedArtist = await pool.query(queries.updateArtist,
-        [artist.name, artist.other_names , artist.genre, idArtist]
-        );
+        if(req.file !== undefined){
+            const img = "artists/" + req.file.filename;
+            const updatedArtist = await pool.query(queries.updateArtist,
+                [artist.name, artist.other_names , artist.genre, img, idArtist]
+            );
+        }
+        else{
+            const updatedArtist = await pool.query(queries.updateArtistButImg,
+                [artist.name, artist.other_names , artist.genre, idArtist]
+            );
+        }
         res.status(200).send("Artist has been updated");
     } catch (err){
         console.error(err.message);
@@ -76,6 +92,7 @@ async function getArtistAlbums(req, res){
         console.error(err.message);
     }
 }
+
 
 
 

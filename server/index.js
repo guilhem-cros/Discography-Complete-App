@@ -10,6 +10,7 @@ const songRoutes = require("./songs/routes");
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static('images'))
 
 app.use("/genres", genreRoutes)
 app.use("/artists", artistRoutes);
