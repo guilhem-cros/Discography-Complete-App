@@ -2,6 +2,7 @@
   <ErrorComponent v-if="error" :mess="this.errMessage"/>
   <div v-else>
   <h1>Albums</h1>
+  <img :src="getCover">
   <div v-for="(song) in this.albumSongs" :key="song.id_song">
     <SongAndFeat :idSong="song.id_song" :mainArtist="this.artist.name" :songName="song.song_title" @loadingError="showError"/>
   </div>
@@ -16,6 +17,8 @@ export default {
     name: 'AlbumView',
     data(){
         return {
+            
+            idAlbum : 1,
             albumData : {},
             albumSongs : [],
             error : false,
@@ -24,7 +27,7 @@ export default {
         }
     },
     props:{
-        idAlbum : String,
+        //idAlbum : String,
     },
     components:{SongAndFeat, ErrorComponent},
     methods:{
@@ -33,7 +36,7 @@ export default {
             await axios.get(url).catch(function (error){
                 this.error = true;
                 this.errMessage = error.message;
-            }).then(response => this.albumData = response.data);
+            }).then(response => (this.albumData = response.data));
         },
         async getSongsOfAlbum(){
             let url = this.$store.getters.getApiURL + "songs/onAlbum/" + this.idAlbum;
@@ -47,13 +50,13 @@ export default {
             await axios.get(url).catch(function(error){
                 this.error = true;
                 this.errMessage = error.message;
-            }).then(response=> this.artist = response.data);
+            }).then(response=> (this.artist = response.data));
         },
         async loadAll(){
-            await this.getAlbumDetails().then(
-                this.getSongsOfAlbum(),
-                this.getMainArtist()
-            );
+            await this.getAlbumDetails();
+            await this.getSongsOfAlbum();
+            await this.getMainArtist();
+            
         },
         showError(value){
             this.error = true;
@@ -61,7 +64,6 @@ export default {
         }
     },
     mounted(){
-        console.log(this.idAlbum)
         this.loadAll();
     }
 }

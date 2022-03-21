@@ -9,6 +9,7 @@
 
 export default {
     name : 'SongAndFeat',
+    emits : ['loadingError'],
     data(){
         return {
             feats : [],
@@ -21,7 +22,7 @@ export default {
     },
     methods: {
         async getFeats(){
-            let url = this.$store.getter.getApiURL + "songs/feats/" + this.idSong;
+            let url = this.$store.getters.getApiURL + "songs/feats/" + this.idSong;
             await axios.get(url).catch(function (error){
                 this.$emit('loadingError', error.message);
             }).then(response => this.feats = response.data);
