@@ -1,6 +1,5 @@
 const express = require("express");
 const functions = require("./controller");
-const { updateArtist } = require("./queries");
 const app = express();
 const multer = require('multer');
 const res = require("express/lib/response");
@@ -15,7 +14,7 @@ const storage = multer.diskStorage({
             cb(null, (date + '.jpg'))
         }
         else if(file.mimetype === 'image/png'){
-            cb(null, (req.body.name + '-' + date + '.png'))
+            cb(null, (date + '.png'))
         }
     }
 });

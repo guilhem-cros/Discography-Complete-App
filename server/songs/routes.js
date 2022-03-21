@@ -20,4 +20,6 @@ app.put("/:id", functions.updateSong);
 //delete a song
 app.delete("/:id", functions.deleteSong);
 
+app.get('/feats/:id', functions.getFeats);
+
 module.exports = app;

@@ -5,9 +5,17 @@ const pool = require("../db");
 async function createAlbum(req, res){
     try{
         const album  = req.body;
-        const newAlbum = await pool.query(queries.createAlbum,
-        [album.title, album.release, album.artist]
-        );
+        if(req.file !== undefined){
+            const img = 'albums/' + req.file.filename;
+            const newArtist = await pool.query(queries.createAlbum,
+                [album.title, album.release, album.artist, img]
+            );
+        }
+        else{
+            const newAlbum = await pool.query(queries.createAlbum,
+            [album.title, album.release, album.artist, null]
+            );
+        }
         res.status(201).send("Album has been created");
     } catch (err){
         console.error(err.message);
@@ -42,9 +50,16 @@ async function updateAlbum(req, res){
     try{
         const idAlbum = req.params.id;
         const album = req.body;
-        const updatedAlbum = await pool.query(queries.updateAlbum,
-        [album.title, album.release , album.artist, idAlbum]
-        );
+        if(req.file!==undefined){
+            img = "albums/" + req.file.filename;
+            const updatedArtist = await pool.query(queries.updateAlbum,
+                [album.title, album.release, album.artist, img, idAlbum])
+        }
+        else{
+            const updatedAlbum = await pool.query(queries.updateAlbumButCover,
+            [album.title, album.release , album.artist, idAlbum]
+            );
+        }
         res.status(200).send("Album has been updated");
     } catch (err){
         console.error(err.message);
