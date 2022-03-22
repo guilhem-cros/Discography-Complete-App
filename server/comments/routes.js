@@ -17,4 +17,7 @@ app.put("/:id", functions.updateComment);
 //delete a comment
 app.delete("/:id", functions.deleteComment);
 
+//get last five comments of an album
+app.get("/last/:id", functions.getLastComments);
+
 module.exports = app;

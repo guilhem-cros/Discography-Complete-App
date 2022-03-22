@@ -64,4 +64,17 @@ async function deleteComment(req, res){
     }
 }
 
-module.exports = {createComment, getCommentsByAlbum, getAllComments, updateComment, deleteComment};
+//return the 5 last comments of an album
+async function getLastComments(req, res){
+    try{
+        const idAlbum = req.params.id;
+        const comments = await pool.query(queries.getLastComsOfAlbum,
+            [idAlbum]
+        );
+        res.status(200).json(comments.rows);
+    } catch (err){
+        console.error(err.message);
+    }
+}
+
+module.exports = {createComment, getCommentsByAlbum, getAllComments, updateComment, deleteComment, getLastComments};
