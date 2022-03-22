@@ -21,7 +21,6 @@ import AlertBox from '../components/AlertBox.vue';
 import ErrorComponent from '../components/RequestError.vue'
 import ArtistForm from '../components/ArtistForm.vue'
 import axios from 'axios';
-import router from '../router/index'
 
 export default ({
     name : 'ArtistView',
@@ -61,7 +60,7 @@ export default ({
       //get the image at src if it exists, get the default pfp instead
       showDetails(id){
         this.currentArtist = this.listArtists[id];
-        router.push({ name: 'artistDetails', params: { id: this.currentArtist.id_artist } })
+        this.$router.push({ name: 'artistDetails', params: { id: this.currentArtist.id_artist } })
       },
       getImg(a){
         if(a.image === undefined || a.image == null || a.image.length == 0){

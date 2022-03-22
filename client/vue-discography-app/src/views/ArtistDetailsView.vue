@@ -22,7 +22,6 @@ import axios from 'axios'
 import ArtistForm from '../components/ArtistForm.vue';
 import AlertBox from '../components/AlertBox.vue';
 import ErrorComponent from '../components/RequestError.vue';
-import router from '../router/index';
 
 export default {
     name : 'ArtistDetails',
@@ -122,7 +121,7 @@ export default {
             this.showError(message)
           }).then(
           this.$emit('success', this.artistDatas.name),
-          router.push({ name: 'artists' }));
+          this.$router.push({ name: 'artists' }));
       },
     },
     props :{

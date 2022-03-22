@@ -32,9 +32,15 @@ const routes = [
     props : true
   },
   {
-    path: '/album',
-    name: 'album',
+    path: '/albumDetails',
+    name: 'albumDetails',
     component: () => import('../views/AlbumDetailsView.vue'),
+    props : true
+  },
+  {
+    path: '/album/:idAlbum',
+    name : 'album',
+    component: () => import('../views/AlbumFormView.vue'),
     props : true
   },
   //catchall 404 

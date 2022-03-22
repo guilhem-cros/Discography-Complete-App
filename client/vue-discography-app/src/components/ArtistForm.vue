@@ -6,7 +6,7 @@
             <label id="artistNameLab" for="artistName">*Name :</label>
             <input id="artistName" type="text" name="artistName" v-model="name" placeholder="The name of the artist"  minlength="3" required>
             <label id="artistOthersLab" for="artistOthers">AKA : </label>
-            <input id="artistOthers" name="artistOthers" placeholder="Separate names by commas" v-model="other_names"/>
+            <input id="artistOthers" type="text" name="artistOthers" placeholder="Separate names by commas" v-model="other_names"/>
             <label id="genreLab">*Main genre :</label>
             <div class="genresRadios">
               <div v-for="(item, index) in this.allGenres" :key="item.id_genre" class="radioB" :class="'radio' + index%6">
@@ -44,7 +44,7 @@ export default {
             updates : false, //boolean describing if updates has been made on the db using the form
             picture : this.create,
             currImg : this.setCurrImg(),
-            artistPicture : null
+            artistPicture : null,
         }
     },
     components: { CoversSlideshow},
@@ -57,8 +57,8 @@ export default {
         async getGenres(){
             let url = this.$store.getters.getApiURL + "genres";  //url to te request datas
             await axios.get(url).catch(function (error){ //getting datas and handling errors
-                this.error = true;
-                this.errMessage = error.message;
+                let message = error.message;
+                this.$emit('error', message)
             }).then(response => (response.data.sort(function(a,b){ //sort the returned list by name of genre
                 if(a.genre.toLowerCase() < b.genre.toLowerCase()){return -1}
                 if(a.genre.toLowerCase() > b.genre.toLowerCase()){return 1}
