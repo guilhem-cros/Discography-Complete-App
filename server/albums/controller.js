@@ -7,16 +7,17 @@ async function createAlbum(req, res){
         const album  = req.body;
         if(req.file !== undefined){
             const img = 'albums/' + req.file.filename;
-            const newArtist = await pool.query(queries.createAlbum,
+            const newAlbum = await pool.query(queries.createAlbum,
                 [album.title, album.release, album.artist, img]
             );
+            res.status(201).json(newAlbum.rows[0]);
         }
         else{
             const newAlbum = await pool.query(queries.createAlbum,
             [album.title, album.release, album.artist, null]
             );
+            res.status(201).json(newAlbum.rows[0]);
         }
-        res.status(201).send("Album has been created");
     } catch (err){
         console.error(err.message);
     }
