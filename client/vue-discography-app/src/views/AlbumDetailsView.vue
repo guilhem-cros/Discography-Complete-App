@@ -21,12 +21,12 @@
   <div class="albumContent">
     <h3 id="tracklistTitle">{{this.upperTitle + " TRACKLIST"}}</h3>
     <div class="tracklist">
-        <div v-for="(song) in this.albumSongs" :key="song.id_song" class="track">
-            <SongAndFeat :idSong="song.id_song" :songName="song.song_title" @loadingError="showError"/>
+        <div v-for="(song, index) in this.albumSongs" :key="song.id_song" class="track">
+            <SongAndFeat :idAlbum="idAlbum" :index=index :idSong="song.id_song" :songName="song.song_title" @loadingError="showError" @deleted="updateList"/>
         </div>
         <p class="addSongBtn" v-if="!isAddingSong" @click="openSongForm">Add a song</p>
         <div class="addSong" v-else>
-          <SongForm :idAlbum="this.idAlbum" @errorLoading="showError" @formClosed="hideForm"/>
+          <SongForm :idAlbum="this.idAlbum" :create="true" :idSong="-1" :name="''" @errorLoading="showError" @formClosed="hideForm"/>
         </div>
     </div>
     <h3 id="commentsTitle">LAST COMMENTS FROM LISTENERS</h3>
@@ -138,6 +138,9 @@ export default {
       },
       hideForm(){
         this.isAddingSong=false;
+      },
+      updateList(index){
+        this.albumSongs.splice(index, 1)
       }
     },
     mounted(){
@@ -346,6 +349,11 @@ export default {
   background-color: #1F9911;
   color : white;
   margin-left : 30%;
+}
+
+.addSongBtn:hover{
+  cursor : pointer;
+  opacity: .8;
 }
 
 @media screen and (max-width: 1050px) {

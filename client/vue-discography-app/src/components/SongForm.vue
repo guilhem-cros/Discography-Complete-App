@@ -1,28 +1,29 @@
 <template>
     <div class="songForm">
+    <p id="formSongTitle">New song :</p>
       <div class="newSong">
           <input type="text" class="newSongInput" placeholder="Song title" v-model="songName">
       </div>
-      <div v-if="!takeFeats">
+      <div v-if="!takeFeats" class="showFeats">
           <p class="takeFeatsBtn" @click="openFeaturings">Add featurings</p>
       </div>
       <div class="songFeats" v-if="takeFeats">
           <p id="featsPreview">{{this.printFeat}}</p>
           <p class="removeAllBtn" @click="removeFeats">Remove all feats</p>
           <div class="feat form-group" v-for="(feat, index) in feats" :key="index">
-            <v-select label="name" class="select form-control" :options="this.listArtists" v-model="feats[index].id" :reduce="name => name.id_artist" required placeholder="Search for an artist"></v-select>
+            <v-select label="name" class="selectA form-control" :options="this.listArtists" v-model="feats[index].id" :reduce="name => name.id_artist" placeholder="Search for an artist"></v-select>
             <span>
-                <i class="removeBtn inputBtn fas fa-minus-circle" @click="remove(index)" v-show="index || (!index && feats.length>1)"> remove </i>
-                <i class="addBtn inputBtn fas fa-plus-circle" @click="add" v-show="index == feats.length-1"> add </i>
+                <p class="removeBtn inputBtn fas fa-minus-circle" @click="remove(index)" v-show="index || (!index && feats.length>1)"> - </p>
+                <p class="addBtn inputBtn fas fa-plus-circle" @click="add" v-show="index == feats.length-1"> + </p>
             </span>
           </div>
       </div>
       <div class="finalBtn">
-        <div class="addSongBtn" @click="submitSong">Save</div>
+        <div class="submitSongBtn" @click="submitSong">Save</div>
         <div class="cancelBtn" @click="closeForm">Cancel</div>
       </div>
-      <AlertBox :alertIndex="alertIndex" :message="message" @alertClosed="resetAlert"/>
     </div>
+    <AlertBox :alertIndex="alertIndex" :message="message" @alertClosed="resetAlert"/>
 
 </template>
 
@@ -35,20 +36,25 @@ export default {
     name: 'SongForm',
     data(){
         return {
-            songName : "",
+            songName : this.name,
             feats : [{ id : ''}],
             id : 0,
             listArtists : [],
             takeFeats : false,
             printFeat : "Feats : ",
             alertIndex : 0,
-            message : ''
+            message : '',
+            song : {}
         }
     },
     components: {vSelect, AlertBox},
     props : {
-        idAlbum : String
+        idAlbum : String,
+        idSong : Number,
+        name : String,
+        create : Boolean
     },
+    emits : ['formClosed', 'errorLoading'],
     methods:{
         async getArtists(){
             let url = this.$store.getters.getApiURL + "artists";
@@ -67,7 +73,8 @@ export default {
                 await axios.post(url, datas).catch(function (error){
                     this.alertIndex = 4;
                     this.message = error.message
-                }).then(this.alertIndex = 0, this.message = "Song has been added");
+                }).then(this.alertIndex = 1, this.message = "Song has been added");
+                location.reload();
             }
         },
         add(){
@@ -140,20 +147,29 @@ export default {
 <style>
 @import url("https://unpkg.com/vue-select@latest/dist/vue-select.css");
 
-.select{
-  width: 400px;
+.selectA{
+  width: 100%;
+  grid-column: 1;
+  text-align: center;
 }
 
 .inputBtn{
   border-radius: 5px;
-  font-size: 12px;
+  font-size: 14px;
   color : white;
   font-style : normal;
   text-align: center;
+  display: inline-flex;
 }
-
-.removeBtn{
-  background-color: #F62222;
+.submitSongBtn{
+  color : white;
+  font-size: 14px;
+  font-weight: lighter;
+  padding : 5px;
+  padding-left : 0;
+  padding-right : 0;
+  border-radius: 5px;
+  margin-bottom: 10%;
 }
 
 .addBtn, .submitSongBtn{
@@ -161,12 +177,20 @@ export default {
 }
 
 .addBtn, .removeBtn{
-  padding-left: 4px;
-  padding-right: 4px;
   margin: 1%;
 }
+.addBtn{
+  width: 15px;
+  padding-left: 6px;
+}
+.removeBtn{
+  width: 12px;
+  padding-left : 7px;
+  background-color: #F62222;
+  margin-right: 5%;
+}
 
-.addBtn:hover, .removeBtn:hover, .removeAllBtn:hover, .takeFeatsBtn:hover, .cancelBtn, .addSongBtn{
+.addBtn:hover, .removeBtn:hover, .removeAllBtn:hover, .takeFeatsBtn:hover, .cancelBtn, .submitSongBtn{
   cursor: pointer;
   opacity: 0.8;
 }
@@ -178,22 +202,114 @@ export default {
 
 .takeFeatsBtn{
   color: #1F9911;
+  text-align: left;
+  width: 100px;
 }
 .removeAllBtn{
-  color: #E7891F
-}
-
-.cancelBtn{
-  font-size: 16px;
-  text-decoration: underline;
-  color: #7E4300;
+  color: #E7891F;
+  margin-bottom: 2%;
+  margin-top: 0;
 }
 
 .cancelBtn{
   font-size: 14px;
+  text-decoration: underline;
+  color: #7E4300;
+  width: 45px;
 }
+
 .finalBtn{
   display: flex;
+  flex-direction: column;
+  width: 100px;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.songForm{
+  text-align: center;
+  width: 40%;
+  margin-left: 25%;
+  border: 1px solid lightgray;
+  text-align: left;
+  padding: 1%;
+  margin-bottom: 2%;
+}
+
+.newSongInput{
+  border-radius: 3px;
+  font-size: 16px;
+  line-height: 2em;
+  border: 1px lightgrey solid;
+  border-radius: 2px;
+  outline: none;
+  width: 80%;
+  font-weight: bold;
+}
+
+.feat{
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  align-items: center;
+  margin-bottom: 2%;
+}
+
+.feat>span{
+  grid-column: 2;
+  text-align: left;
+  margin-left: 5%;
+}
+
+.songFeats{
+  margin-bottom: 5%;
+}
+
+.songFeats > p{
+  text-align: left;
+}
+
+#featsPreview{
+  font-weight: bold;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+#formSongTitle{
+  padding: 0;
+  margin : 0;
+  margin-bottom: 2%;
+  font-weight: bold;
+  font-size: 16px;
+  margin-left: 1%;
+}
+
+@media screen and (max-width: 1100px){
+  .songForm{
+    width: 60%;
+    margin-left: 20%;
+  }
+}
+
+@media screen and (max-width: 900px){
+  .songForm{
+    margin-left: 10%;
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 700px){
+  .songForm{
+    margin-left: 20%;
+    width: 60%;
+  }
+}
+
+@media screen and (max-width: 500px){
+  .songForm{
+    margin-left: 10%;
+    margin-right: 10%;
+    width: 80%;
+  }
 }
 
 </style>

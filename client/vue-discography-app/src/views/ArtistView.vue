@@ -6,7 +6,7 @@
     <div class="addB" @click="openForm">Add new</div>
   </div>
   <div class="listArtists">
-    <div v-for="(artist, index) in this.listArtists" :key="artist.id_artist" class="artist" :class="'col_' + index%4" @click="showDetails(index)">
+    <div v-for="(artist, index) in this.listArtists" :key="artist.id_artist" class="artist" :class="'col_' + index%6" @click="showDetails(index)">
       <img :src="this.getImg(artist)" :alt="artist.name + '_picture'" class="pfp">
       <p class="artistName">{{ artist.name }}</p>
     </div>
@@ -137,6 +137,14 @@ export default ({
 .col_3{
   grid-column: 4;
 }
+
+.col_4{
+  grid-column: 5;
+}
+
+.col_5{
+  grid-column: 6;
+}
 .artistList{
   margin-left : 10%;
   margin-right: 10%;
@@ -149,7 +157,7 @@ export default ({
 }
 
 .artist{
-  background-color: white;
+  color : white;
   margin: 4%;
   border-radius: 4px;
   padding : 1%;
@@ -159,10 +167,7 @@ export default ({
 
 .artist:hover{
   cursor: pointer;
-  opacity: 0.9;
-  margin: 1%;
-  padding: 0;
-  zoom : 101%;
+  opacity: 0.8;
 }
 
 .artistName{
@@ -177,10 +182,11 @@ export default ({
   background-size: cover;
   margin : 1%;
   border-radius: 50%;
-  border : 2px solid #404341;
+  border : 3px solid white;
   width: 100px;
   object-fit: cover;
   height: 100px;
+  background-color: whitesmoke;
 }
 
 .addB:hover{
@@ -231,13 +237,6 @@ export default ({
 
 @media screen and (max-width: 1050px) {
   .artistList{
-    margin-left : 2%;
-    margin-right: 2%;
-  }
-}
-
-@media screen and (max-width: 1050px) {
-  .artistList{
     margin-left : 1%;
     margin-right: 1%;
   }
@@ -251,12 +250,16 @@ export default ({
 }
 
 @media screen and (max-width: 800px) {
-  .col_2{
+  .col_3{
     grid-column: 1;
   }
 
-  .col_3{
+  .col_4{
     grid-column: 2;
+  }
+
+  .col_5{
+    grid-column: 3;
   }
   .addB{
     width : 35%;
@@ -265,15 +268,19 @@ export default ({
 }
 
 @media screen and (max-width: 350px) {
-  .col_1{
-    grid-column: 1;
-  }
+
   .col_2{
     grid-column: 1;
   }
-
   .col_3{
+    grid-column: 2;
+  }
+  .col_4{
     grid-column: 1;
+  }
+
+  .col_5{
+    grid-column: 2;
   }
 
   .artistList{
