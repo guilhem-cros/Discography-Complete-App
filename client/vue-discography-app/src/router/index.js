@@ -32,7 +32,7 @@ const routes = [
     props : true
   },
   {
-    path: '/albumDetails',
+    path: '/albumDetails/:idAlbum',
     name: 'albumDetails',
     component: () => import('../views/AlbumDetailsView.vue'),
     props : true

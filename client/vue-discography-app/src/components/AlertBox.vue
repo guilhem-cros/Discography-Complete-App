@@ -25,7 +25,7 @@ export default {
         return{
         }
     },
-    name: "CoversSlideshow",
+    name: "AlertBox",
     mounted() {
       //import scripts from bootstrap
       let script1 = document.createElement('script')
@@ -44,12 +44,6 @@ export default {
     props:{
         alertIndex: Number, //index of the alert to display (0 = none)
         message : String //message of the alert
-    },
-    beforeCreate () {
-    document.querySelector('body').setAttribute('style', 'background:#111110')
-    },
-    beforeUnmount () {
-      document.querySelector('body').setAttribute('style', '')
     },
 }
 </script>

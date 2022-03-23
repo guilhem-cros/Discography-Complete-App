@@ -2,7 +2,7 @@
   <ErrorComponent v-if="error" :mess="this.errMessage"/>
   <div class="artistList" v-if="this.displayList">
   <div class="titleDiv">
-    <h2 id="artistTitle">All artists : </h2>
+    <h2 id="artistTitle">All the artists : </h2>
     <div class="addB" @click="openForm">Add new</div>
   </div>
   <div class="listArtists">

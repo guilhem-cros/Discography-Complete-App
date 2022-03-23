@@ -101,6 +101,7 @@ export default {
                 this.genre = null;
                 this.other_names=null;
                 this.picture = this.create;
+                this.artistPicture = null;
             }
         },
         setCurrImg(){
@@ -169,6 +170,7 @@ export default {
   grid-row: 2;
   width : 80%;
   height:2.4em;
+  outline: none
 }
 
 .slideshow, #artistPic{
@@ -184,6 +186,7 @@ export default {
 #artistOthers{
   grid-row: 4;
   width : 80%;
+  outline: none
 }
 
 #picInput{
@@ -291,7 +294,7 @@ export default {
   text-decoration: underline;
 }
 
-.backBt:hover{
+.backB:hover{
   cursor: pointer;
   color : gold;
 }

@@ -14,7 +14,7 @@
           <h4 class="albLabel">ALBUM</h4>
           <h1 id="albumTitle">{{this.upperTitle}}</h1>
           <h2 id="author" @click="showArtist">{{this.artist.name}}</h2>
-          <p id="releaseDate">{{"Released " + this.monthNames[Number(this.date[1])-1] + " " + (Number(this.date[2])+1) + ", " + this.date[0]}}</p>
+          <p id="releaseDate">{{"Released " + this.monthNames[Number(this.date[1])-1] + " " + (Number(this.date[2])) + ", " + this.date[0]}}</p>
         </div>
     </div>
   </div>
@@ -23,6 +23,10 @@
     <div class="tracklist">
         <div v-for="(song) in this.albumSongs" :key="song.id_song" class="track">
             <SongAndFeat :idSong="song.id_song" :songName="song.song_title" @loadingError="showError"/>
+        </div>
+        <p class="addSongBtn" v-if="!isAddingSong" @click="openSongForm">Add a song</p>
+        <div class="addSong" v-else>
+          <SongForm :idAlbum="this.idAlbum" @errorLoading="showError" @formClosed="hideForm"/>
         </div>
     </div>
     <h3 id="commentsTitle">LAST COMMENTS FROM LISTENERS</h3>
@@ -38,14 +42,14 @@
 
 <script>
 import axios from 'axios';
-import SongAndFeat from '../components/SongAndFeat.vue';
 import ErrorComponent from '../components/RequestError.vue';
+import SongForm from '../components/SongForm.vue';
+import SongAndFeat from '../components/SongAndFeat.vue';
 
 export default {
-    name: 'AlbumView',
+    name: 'AlbumDetailsView',
     data(){
         return {
-            idAlbum : 1,
             albumData : {},
             albumSongs : [],
             error : false,
@@ -55,12 +59,14 @@ export default {
             monthNames : ["January", "February", "March", "April", "May", "June",
                                 "July", "August", "September", "October", "November", "December"
                             ],
+            alertIndex : 0,
+            isAddingSong : false,
         }
     },
     props:{
-        //idAlbum : String,
+        idAlbum : String
     },
-    components:{SongAndFeat, ErrorComponent},
+    components:{ErrorComponent, SongForm, SongAndFeat},
     methods:{
         async getAlbumDetails(){
             let url = this.$store.getters.getApiURL + "albums/" + this.idAlbum;
@@ -112,8 +118,27 @@ export default {
             this.$router.push({name: 'artistDetails', params: { id : this.artist.id_artist}});
         },
         openForm(){
-            this.$router.push({name : 'album', params : {idAlbum : this.idAlbum}});
-        }
+            this.$router.push({name : 'album', params : {idAlbum : this.idAlbum, artistName : this.artist.name}});
+        },
+        deleteConfirm(){
+          if (window.confirm('Delete the album ' + this.albumData.title + ' ?')){
+              this.delete()
+          }
+        },
+        async delete(){
+          let url = this.$store.getters.getApiURL + "albums/" + this.idAlbum;
+          await axios.delete(url).catch(function (error) { //delete the genre in the DB
+            let message = error.message;
+            this.showError(message)
+          }).then(
+          this.$router.push({ name: 'home' }));
+      },
+      openSongForm(){
+        this.isAddingSong=true;
+      },
+      hideForm(){
+        this.isAddingSong=false;
+      }
     },
     mounted(){
         this.loadAll();
@@ -166,7 +191,6 @@ export default {
 .bannerContent{
   grid-row: 1;
   grid-column: 1/3;
-  margin-right :0;
   height: 100%;
   display : grid;
   text-align : center;
@@ -295,15 +319,33 @@ export default {
 
 #updateLogo{
   grid-row : 2;
+  padding : 5%;
+  background-color : rgba(65, 127, 197, 0.7);
+  border-radius : 2px;
 }
 
 #deleteLogo{
   grid-row : 1;
+  background-color : rgba(196, 48, 48, 0.7);
+  padding : 5%;
+  border-radius : 2px;
 }
 
 #deleteLogo:hover, #updateLogo:hover{
   cursor: pointer;
   opacity: 0.8;
+}
+
+.addSongBtn{
+  font-size: 14px;
+  padding : 5px;
+  padding-left : 0;
+  padding-right : 0;
+  width : 100px;
+  border-radius: 5px;
+  background-color: #1F9911;
+  color : white;
+  margin-left : 30%;
 }
 
 @media screen and (max-width: 1050px) {
@@ -317,6 +359,9 @@ export default {
 }
 
 @media screen and (max-width: 900px) {
+  .addSongBtn{
+    margin-left: 15%;
+  }
 
     #tracklistTitle{
       grid-column: 1;
@@ -340,6 +385,9 @@ export default {
 }
 
 @media screen and (max-width: 700px) {
+  .addSongBtn{
+    margin-left: 25%;
+  }
 
     .albumBanner{
       height: 200px;
@@ -384,9 +432,22 @@ export default {
     .albumCover{
       height: 125px;
       width: 125px;
+      margin-right: 1%;
+      margin-left: 1%;
     }
     .bannerContent{
       margin-right: 0;
+      grid-column: 1/6;
+    }
+
+    .modifLogos{
+      grid-column: 6;
+    }
+    #deleteLogo{
+      margin-top: 10%;
+    }
+    #updateLogo{
+      margin-top: 15%;
     }
 }
 

@@ -1,8 +1,8 @@
 <template>
   <div class="loadError">
     <h1>Error</h1>
-    <p>An error occured during loading the datas.</p>
-    <p>Please, try to reload the page (F5 key). If the error persits, contact an administrator.</p>
+    <p>An error occurred during loading the data.</p>
+    <p>Please, try to reload the page (F5 key). If the error persists, contact an administrator.</p>
     <p id="errMess">Error message : {{this.mess}}</p>
   </div>
 </template>

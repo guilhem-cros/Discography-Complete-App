@@ -188,11 +188,17 @@ export default {
 
 #updateLogo{
   grid-row : 2;
+  padding : 5%;
+  background-color : rgba(65, 127, 197, 0.7);
+  border-radius : 2px;
 }
 
 #deleteLogo{
   grid-row : 1;
   margin-bottom: 15%;
+  background-color : rgba(196, 48, 48, 0.7);
+  padding : 5%;
+  border-radius : 2px;
 }
 
 #deleteLogo:hover, #updateLogo:hover{
