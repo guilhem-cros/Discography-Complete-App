@@ -40,7 +40,7 @@ export default {
             feats : [{ id : ''}],
             id : 0,
             listArtists : [],
-            takeFeats : false,
+            takeFeats : !this.create,
             printFeat : "Feats : ",
             alertIndex : 0,
             message : '',
@@ -52,7 +52,9 @@ export default {
         idAlbum : String,
         idSong : Number,
         name : String,
-        create : Boolean
+        create : Boolean,
+        featurings : Array,
+        idArtist : Number,
     },
     emits : ['formClosed', 'errorLoading'],
     methods:{
@@ -65,16 +67,26 @@ export default {
                 if(a.name.toLowerCase() > b.name.toLowerCase()){return 1}
                 return 0;
             })).then(response => this.listArtists = response);
+            this.removeArtistFromList();
         },
         async submitSong(){
+            let datas = {title : this.songName, album : this.idAlbum, feats : this.getFeatsArray()};
             if(this.songName.length > 0){
-                let url = this.$store.getters.getApiURL + "songs";
-                let datas = {title : this.songName, album : this.idAlbum, feats : this.getFeatsArray()};
-                await axios.post(url, datas).catch(function (error){
-                    this.alertIndex = 4;
-                    this.message = error.message
-                }).then(this.alertIndex = 1, this.message = "Song has been added");
-                location.reload();
+                if(this.create){
+                    let url = this.$store.getters.getApiURL + "songs";
+                    await axios.post(url, datas).catch(function (error){
+                        this.alertIndex = 4;
+                        this.message = error.message
+                    }).then(this.alertIndex = 1, this.message = "Song has been added");
+                }
+                else{
+                    let url = this.$store.getters.getApiURL + "songs/" + this.idSong;
+                    await axios.put(url, datas).catch(function (error){
+                        this.alertIndex = 4;
+                        this.message = error.message;
+                    }).then(this.alertIndex = 1, this.message = 'Song has been updated');
+                }
+                location.reload()
             }
         },
         add(){
@@ -99,6 +111,14 @@ export default {
                 }
             }
         },
+        setFeats(){
+            if(this.featurings.length>0){
+                this.feats = []
+            }
+            for(let f of this.featurings){
+                this.feats.push({id : f.id_artist});
+            }
+        },
         getArtistName(id){
             for(let artist of this.listArtists){
                 if(artist.id_artist == id){
@@ -113,9 +133,12 @@ export default {
         getFeatsArray(){
             let featArray = [];
             for(let feat of this.feats){
-                if(feat.id != ''){
+                if(feat.id != '' && feat.id!=null && feat.id!==undefined){
                     featArray.push(feat.id);
                 }
+            }
+            if(featArray[0] == null && featArray.length==1){
+                return []
             }
             return featArray;
         },
@@ -124,6 +147,17 @@ export default {
             this.alertIndex = 0;
             this.message ="";
         },
+        removeArtistFromList(){
+            let deleted = false
+            let i = 0;
+            while(i<this.listArtists.length && !deleted){
+                if(this.listArtists[i].id_artist == this.idArtist){
+                    this.listArtists.splice(i, 1);
+                    deleted = true;
+                }
+                i++;
+            }
+        }
     },
     watch:{
         feats : {
@@ -135,11 +169,12 @@ export default {
     },
     mounted(){
         this.getArtists();
+        this.setFeats();
     },
     beforeCreate(){
       let script1 = document.createElement('script')
       script1.setAttribute('src', "https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js")
-      document.head.appendChild(script1)
+      document.head.appendChild(script1);
     },
 }
 </script>
@@ -190,7 +225,7 @@ export default {
   margin-right: 5%;
 }
 
-.addBtn:hover, .removeBtn:hover, .removeAllBtn:hover, .takeFeatsBtn:hover, .cancelBtn, .submitSongBtn{
+.addBtn:hover, .removeBtn:hover, .removeAllBtn:hover, .takeFeatsBtn:hover, .cancelBtn:hover, .submitSongBtn:hover{
   cursor: pointer;
   opacity: 0.8;
 }

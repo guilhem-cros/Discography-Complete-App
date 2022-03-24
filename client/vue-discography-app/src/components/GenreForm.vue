@@ -56,6 +56,7 @@ export default {
         this.desc = "";
         //update has been made -> true
         this.updates = true
+        location.reload();
       }
     },
     //emit a message to hide form and display list
@@ -129,7 +130,7 @@ export default {
 #genreDesc{
   grid-row: 4;
   width : 80%;
-  height: 5em;
+  height: 7em;
 }
 
 #genreName, #genreDesc, #genreNameLab, #genreDescLab{

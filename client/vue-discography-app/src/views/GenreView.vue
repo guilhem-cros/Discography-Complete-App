@@ -1,5 +1,4 @@
 <template>
-  <ErrorComponent v-if="error" :mess="this.errMessage"/>
   <div class="genreList" v-if="this.displayIndex==0">
       <div class="titleDiv">
         <h2 id="genreTitle">All genres of music : </h2>
@@ -23,12 +22,11 @@
 <script>
 import GenreForm from '../components/GenreForm.vue';
 import AlertBox from '../components/AlertBox.vue';
-import ErrorComponent from '../components/RequestError.vue'
 import axios from 'axios';
 
 export default {
   name: 'GenreView',
-  components: { GenreForm, AlertBox, ErrorComponent },
+  components: { GenreForm, AlertBox },
   data(){
       return{
         listGenres : [], //list of all the genres

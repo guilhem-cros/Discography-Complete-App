@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="updateSong" v-if="update">
-      <SongForm :idAlbum="this.idAlbum" :create="false" :name="this.songName" :idSong="this.idSong" @errorLoading="showError" @formClosed="hideForm"/>
+      <SongForm :idAlbum="this.idAlbum" :create="false" :name="this.songName" :idSong="this.idSong" :featurings="this.feats" :idArtist="this.idArtist" @errorLoading="showError" @formClosed="hideForm"/>
     </div>
 </template>
 
@@ -32,8 +32,9 @@ export default {
     props:{
         idSong : Number,
         songName : String,
-        index : Number, 
-        idAlbum : String
+        index : Number,
+        idAlbum : String,
+        idArtist : Number
     },
     methods: {
         async getFeats(){

@@ -43,6 +43,12 @@ const routes = [
     component: () => import('../views/AlbumFormView.vue'),
     props : true
   },
+  {
+    path:'/sever-error',
+    name: 'error',
+    component: () => import('../views/RequestError.vue'),
+    props : true
+  },
   //catchall 404 
   {
     path : '/:catchAll(.*)',

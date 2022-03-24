@@ -1,6 +1,5 @@
 <template>
-  <ErrorComponent v-if="error" :mess="this.errMessage"/>
-  <div class="albumDetails" v-else>
+  <div class="albumDetails">
   <div class="albumBanner" :style="'background-image: url(' + this.getCover() + ')'">
     <div class="modifLogos">
         <img src="../assets/updateLogo.png" alt="updateLogo" id="updateLogo" title = "Update" @click="openForm">
@@ -22,11 +21,11 @@
     <h3 id="tracklistTitle">{{this.upperTitle + " TRACKLIST"}}</h3>
     <div class="tracklist">
         <div v-for="(song, index) in this.albumSongs" :key="song.id_song" class="track">
-            <SongAndFeat :idAlbum="idAlbum" :index=index :idSong="song.id_song" :songName="song.song_title" @loadingError="showError" @deleted="updateList"/>
+            <SongAndFeat :idAlbum="idAlbum" :index="index" :idSong="song.id_song" :songName="song.song_title" :idArtist="this.artist.id_artist" @loadingError="showError" @deleted="updateList"/>
         </div>
         <p class="addSongBtn" v-if="!isAddingSong" @click="openSongForm">Add a song</p>
         <div class="addSong" v-else>
-          <SongForm :idAlbum="this.idAlbum" :create="true" :idSong="-1" :name="''" @errorLoading="showError" @formClosed="hideForm"/>
+          <SongForm :idAlbum="this.idAlbum" :create="true" :idSong="-1" :name="''" :featurings="[]" :idArtist="this.artist.id_artist" @errorLoading="showError" @formClosed="hideForm"/>
         </div>
     </div>
     <h3 id="commentsTitle">LAST COMMENTS FROM LISTENERS</h3>
@@ -42,9 +41,9 @@
 
 <script>
 import axios from 'axios';
-import ErrorComponent from '../components/RequestError.vue';
-import SongForm from '../components/SongForm.vue';
 import SongAndFeat from '../components/SongAndFeat.vue';
+import SongForm from '../components/SongForm.vue';
+
 
 export default {
     name: 'AlbumDetailsView',
@@ -52,7 +51,6 @@ export default {
         return {
             albumData : {},
             albumSongs : [],
-            error : false,
             errMessage: "",
             artist : {},
             lastComments : [],
@@ -66,21 +64,25 @@ export default {
     props:{
         idAlbum : String
     },
-    components:{ErrorComponent, SongForm, SongAndFeat},
+    components:{SongForm, SongAndFeat},
     methods:{
         async getAlbumDetails(){
             let url = this.$store.getters.getApiURL + "albums/" + this.idAlbum;
             await axios.get(url).catch(function (error){
                 this.error = true;
                 this.errMessage = error.message;
-            }).then(response => (this.albumData = response.data));
+            }).then(response => this.albumData = response.data)
         },
         async getSongsOfAlbum(){
             let url = this.$store.getters.getApiURL + "songs/onAlbum/" + this.idAlbum;
             await axios.get(url).catch(function (error){
                 this.error = true;
                 this.errMessage = error.message;
-            }).then(response => this.albumSongs = response.data);
+            }).then(response => ( response.data.sort(function(a,b){
+              if(a.id_song < b.id_song){return -1}
+              if(a.id_song > b.id_song){return 1}
+              return 0;
+            }))).then(response => this.albumSongs = response);
         },
         async getMainArtist(){
             let url = this.$store.getters.getApiURL + "artists/" + this.albumData.artist;
@@ -171,13 +173,20 @@ export default {
     beforeUnmount () {
       document.querySelector('body').setAttribute('style', '')
     },
+    created(){
+      this.$watch(
+        ()=> this.$route.params,
+        () =>
+          location.reload()
+      )
+    }
 }
 </script>
 
 <style>
 
 .albumBanner{
-    display: grid;
+  display: grid;
   background-position: center;
   background-size: cover;
   margin : 0;
@@ -251,12 +260,12 @@ export default {
 .albumCover {
     width : 300px;
     height: 300px;
-    border: solid 2px #B2AEAE;
+    border: solid 2px #222;
 }
 
 .tracklist{
   text-align: center;
-  grid-column: 1/4;
+  grid-column: 1/3;
   grid-row: 2;
 }
 
@@ -274,21 +283,23 @@ export default {
 
 .albumContent{
   display : grid;
-  margin-left: 5%;
   margin-left: 1%;
+  grid-auto-columns: minmax(0, 1fr);
 }
 
 #tracklistTitle{
-  grid-column: 2;
+  text-align: center;
+  margin-right: 10%;
+  grid-column: 1/3;
   grid-row : 1;
 }
 #commentsTitle{
-  grid-column: 4;
+  grid-column: 3;
   grid-row : 1;
 }
 
 .coms{
-  grid-column: 4;
+  grid-column: 3;
   grid-row: 2;
   text-align: left;
 }
@@ -312,11 +323,11 @@ export default {
 }
 
 .modifLogos{
-    grid-row: 1;
-    grid-column: 3;
+  grid-row: 1;
+  grid-column: 3;
   display: grid;
   justify-content: end;
-  margin-right : 1%;
+  margin-right : 2%;
   height: 10%;
 }
 

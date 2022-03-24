@@ -1,5 +1,4 @@
 <template>
-    <ErrorComponent v-if="error" :mess="this.errMessage"/>
     <div class="form">
         <h2>{{ this.pageTitle }}</h2>
         <p id="reqInfo">* required</p>
@@ -33,7 +32,6 @@
 <script>
 import axios from 'axios';
 import AlertBox from '../components/AlertBox.vue';
-import ErrorComponent from '../components/RequestError.vue'
 import vSelect from "vue-select";
 
 
@@ -54,7 +52,6 @@ export default{
             alertIndex : 0,
             message : "",
             errMessage : "",
-            error : false,
             albumCover : null,
             date : "",
         }
@@ -63,7 +60,7 @@ export default{
         idAlbum : String,
         artistName : String,
     },
-    components: {AlertBox, ErrorComponent, vSelect},
+    components: {AlertBox, vSelect},
     methods : {
         async getArtists(){
             let url = this.$store.getters.getApiURL + "artists";

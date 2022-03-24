@@ -1,5 +1,4 @@
 <template>
-  <ErrorComponent v-if="error" :mess="this.errMessage"/>
   <div class="artistList" v-if="this.displayList">
   <div class="titleDiv">
     <h2 id="artistTitle">All the artists : </h2>
@@ -18,20 +17,18 @@
 
 <script>
 import AlertBox from '../components/AlertBox.vue';
-import ErrorComponent from '../components/RequestError.vue'
 import ArtistForm from '../components/ArtistForm.vue'
 import axios from 'axios';
 
 export default ({
     name : 'ArtistView',
-    components: {AlertBox, ErrorComponent, ArtistForm},
+    components: {AlertBox, ArtistForm},
     data(){
         return{
             listArtists : [], //list of all artists
             displayList : true, //index of what is currently displayed in the view
             alertIndex : 0, //index of the alert notif : 0 = hide alerts
             message : "", //message for the alerts notifications
-            error : false, //boolean : true if and error happens during loading datas,
             errMessage : "",//message send during the error
             currentArtist : {},
             imgSrc : this.$store.getters.getApiURL,
