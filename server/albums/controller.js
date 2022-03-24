@@ -80,4 +80,16 @@ async function deleteAlbum(req, res){
     }
 }
 
-module.exports = {createAlbum, getAlbums, getAlbumById, updateAlbum, deleteAlbum}
+async function searchAlbum(req, res){
+    try{
+        const text = req.params.text;
+        const albums = await pool.query(queries.searchAlbum,
+        [text+'%']
+        );
+        res.status(200).json(albums.rows);
+    } catch (err){
+        res.status(500).send({message : err.message})
+    }
+}
+
+module.exports = {createAlbum, getAlbums, getAlbumById, updateAlbum, deleteAlbum, searchAlbum}

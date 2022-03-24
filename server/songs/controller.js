@@ -100,4 +100,16 @@ async function getFeats(req, res){
     }
 }
 
-module.exports = {createSong, getAllSongs, getSongsOfAlbum, getSongByID, updateSong, deleteSong, getFeats};
+async function searchSong(req,res){
+    try{
+        const text = req.params.text;
+        const songs = await pool.query(queries.searchSong,
+        [text+'%']
+        );
+        res.status(200).json(songs.rows)
+    } catch (err) {
+        res.status(500).send({message : err.message})
+    }
+}
+
+module.exports = {createSong, getAllSongs, getSongsOfAlbum, getSongByID, updateSong, deleteSong, getFeats, searchSong};

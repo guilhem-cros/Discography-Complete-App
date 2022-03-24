@@ -105,7 +105,19 @@ async function getAlbumOn(req, res){
     }
 }
 
+async function searchArtist(req, res){
+    try{
+        const text = req.params.text;
+        const artists = await pool.query(queries.searchArtist,
+        [text+'%']
+        );
+        res.status(200).json(artists.rows);
+    } catch(err){
+        res.status(500).send({message : err.message});
+    }
+}
 
 
 
-module.exports = {createArtist, getArtists, getArtistByID, updateArtist, deleteArtist, getArtistAlbums, getAlbumOn};
+
+module.exports = {createArtist, getArtists, getArtistByID, updateArtist, deleteArtist, getArtistAlbums, getAlbumOn, searchArtist};

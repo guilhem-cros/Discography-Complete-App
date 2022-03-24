@@ -22,4 +22,6 @@ app.delete("/:id", functions.deleteSong);
 
 app.get('/feats/:id', functions.getFeats);
 
+app.get('/search/:text', functions.searchSong);
+
 module.exports = app;

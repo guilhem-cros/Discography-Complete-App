@@ -59,4 +59,7 @@ app.get("/albums/:id", functions.getArtistAlbums);
 //get all the albums/songs where an artist has a feat
 app.get("/albums/whereArtist/:id", functions.getAlbumOn);
 
+//return the artist with name begining by what is send
+app.get("/search/:text", functions.searchArtist);
+
 module.exports = app;

@@ -53,4 +53,7 @@ app.put("/:id",upload.single('albumCover'), functions.updateAlbum);
 //delete album
 app.delete("/:id", functions.deleteAlbum);
 
+//search an album
+app.get('/search/:text', functions.searchAlbum);
+
 module.exports = app;
