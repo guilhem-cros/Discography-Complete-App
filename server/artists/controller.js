@@ -18,7 +18,7 @@ async function createArtist(req, res){
         }
         res.status(201).send("Artist has been created");
     } catch (err){
-        console.error(err.message);
+        res.status(501).send({message : err.message});
     }
 }
 
@@ -28,7 +28,7 @@ async function getArtists(req, res){
         const allArtist = await pool.query(queries.getArtists);
         res.status(200).json(allArtist.rows);
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -41,7 +41,7 @@ async function getArtistByID(req, res){
         );
         res.status(200).json(artist.rows[0]);
     } catch (err){
-        console.error(err.message)
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -63,7 +63,7 @@ async function updateArtist(req, res){
         }
         res.status(200).send("Artist has been updated");
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -76,7 +76,7 @@ async function deleteArtist(req, res){
         );
         res.status(200).send("Artist has been deleted");
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -89,11 +89,23 @@ async function getArtistAlbums(req, res){
         );
         res.status(200).json(albums.rows);
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
+    }
+}
+
+async function getAlbumOn(req, res){
+    try{
+        const idArtist = req.params.id;
+        const results = await pool.query(queries.getAlbumOn,
+        [idArtist]
+        );
+        res.status(200).send(results.rows);
+    } catch (err){
+        res.status(500).send({message : err.message})
     }
 }
 
 
 
 
-module.exports = {createArtist, getArtists, getArtistByID, updateArtist, deleteArtist, getArtistAlbums};
+module.exports = {createArtist, getArtists, getArtistByID, updateArtist, deleteArtist, getArtistAlbums, getAlbumOn};

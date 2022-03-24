@@ -10,7 +10,7 @@ async function createGenre(req, res){
         );
         res.status(201).send("Genre has been created");
     } catch (err){
-        console.error(err.message);
+        res.status(501).send({message : err.message});
     }
 }
 
@@ -20,7 +20,7 @@ async function getGenres(req, res){
         const allGenres = await pool.query(queries.getGenres);
         res.status(200).json(allGenres.rows);
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -33,7 +33,7 @@ async function getGenre(req, res){
         );
         res.status(200).json(genre.rows[0]);
     } catch (err){
-        console.error(err.message)
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -47,7 +47,7 @@ async function updateGenre(req, res){
         );
         res.status(200).send("Genre has been updated")
     } catch (err){
-        console.error(err.message)
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -60,7 +60,7 @@ async function deleteGenre(req, res){
         );
         res.status(200).send("Genre has been deleted");
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 

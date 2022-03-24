@@ -15,7 +15,7 @@ async function createSong(req, res){
         }
         res.status(201).send("Song and feats created");
     } catch (err){
-        console.error(err.message);
+        res.status(501).send({message : err.message});
     }
 }
 
@@ -25,7 +25,7 @@ async function getAllSongs(req, res){
         const allSongs = await pool.query(queries.getSongs);
         res.status(200).json(allSongs.rows);
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -38,7 +38,7 @@ async function getSongsOfAlbum(req, res){
         );
         res.status(200).json(songs.rows);
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -51,7 +51,7 @@ async function getSongByID(req, res){
         );
         res.status(200).json(song.rows[0]);
     } catch (err){
-        console.error(err.message)
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -71,7 +71,7 @@ async function updateSong(req, res){
         }
         res.status(200).send("Song has been updated");
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -84,7 +84,7 @@ async function deleteSong(req, res){
         );
         res.status(200).send("Song has been deleted");
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -96,7 +96,7 @@ async function getFeats(req, res){
         );
         res.status(200).json(feats.rows);
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 

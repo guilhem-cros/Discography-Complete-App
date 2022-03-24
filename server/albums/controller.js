@@ -19,7 +19,7 @@ async function createAlbum(req, res){
             res.status(201).json(newAlbum.rows[0]);
         }
     } catch (err){
-        console.error(err.message);
+        res.status(501).send({message : err.message});
     }
 }
 
@@ -29,7 +29,7 @@ async function getAlbums(req, res){
         const allAlbums = await pool.query(queries.getAlbums);
         res.status(200).json(allAlbums.rows);
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -42,7 +42,7 @@ async function getAlbumById(req, res){
         );
         res.status(200).json(album.rows[0]);
     } catch (err){
-        console.error(err.message)
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -63,7 +63,7 @@ async function updateAlbum(req, res){
         }
         res.status(200).send("Album has been updated");
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -76,7 +76,7 @@ async function deleteAlbum(req, res){
         );
         res.status(200).send("Album has been deleted");
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 

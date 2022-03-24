@@ -56,4 +56,7 @@ app.delete("/:id", functions.deleteArtist);
 //get artist's albums
 app.get("/albums/:id", functions.getArtistAlbums);
 
+//get all the albums/songs where an artist has a feat
+app.get("/albums/whereArtist/:id", functions.getAlbumOn);
+
 module.exports = app;

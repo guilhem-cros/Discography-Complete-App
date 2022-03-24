@@ -10,7 +10,7 @@ async function createComment(req, res){
         );
         res.status(201).send("Comment has been created");
     } catch (err){
-        console.error(err.message);
+        res.status(501).send({message : err.message});
     }
 }
 
@@ -23,7 +23,7 @@ async function getCommentsByAlbum(req, res){
         );
         res.status(200).json(comments.rows);
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -33,7 +33,7 @@ async function getAllComments(req, res){
         const allComments = await pool.query(queries.getComments);
         res.status(200).json(allComments.rows);
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -47,7 +47,7 @@ async function updateComment(req, res){
         );
         res.status(200).send("Comment has been updated");
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -60,7 +60,7 @@ async function deleteComment(req, res){
         );
         res.status(200).send("Comment has been deleted");
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -73,7 +73,7 @@ async function getLastComments(req, res){
         );
         res.status(200).json(comments.rows);
     } catch (err){
-        console.error(err.message);
+        res.status(500).send({message : err.message});
     }
 }
 

@@ -5,5 +5,6 @@ const updateArtist = "UPDATE artists SET name = $1, other_names = $2, genre = $3
 const updateArtistButImg = "UPDATE artists SET name = $1, other_names = $2, genre = $3 WHERE id_artist = $4";
 const deleteArtist = "DELETE FROM artists WHERE id_artist = $1";
 const getAllAlbums = "SELECT * FROM albums WHERE artist=$1";
+const getAlbumOn = "SELECT * FROM albums JOIN songs ON albums.id_album = songs.album JOIN featurings ON songs.id_song = featurings.song WHERE featurings.f_artist = $1"
 
-module.exports = {getArtists, getArtistByID, createArtist, updateArtist, deleteArtist, getAllAlbums, updateArtistButImg};
+module.exports = {getArtists, getArtistByID, createArtist, updateArtist, deleteArtist, getAllAlbums, updateArtistButImg, getAlbumOn};
