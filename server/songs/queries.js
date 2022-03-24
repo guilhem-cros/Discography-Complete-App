@@ -7,6 +7,6 @@ const updateSong = "UPDATE songs SET song_title = $1, album = $2 WHERE id_song =
 const removeFeaturing = "DELETE FROM featurings WHERE song = $1";
 const deleteSong = "DELETE FROM songs WHERE id_song = $1";
 const getFeaturing = "SELECT artists.name, artists.id_artist FROM featurings JOIN artists ON featurings.f_artist=artists.id_artist WHERE song = $1"
-const searchSong = "SELECT * FROM songs WHERE LOWER(song_title) LIKE LOWER($1)"
+const searchSong = "SELECT * FROM songs JOIN albums on songs.album=albums.id_album JOIN artists ON albums.artist = artists.id_artist WHERE LOWER(song_title) LIKE LOWER($1)"
 
 module.exports = {getSongs, getSongById, getSongsOfAlbum, createSong, addFeaturing, updateSong, removeFeaturing, deleteSong, getFeaturing, searchSong};
