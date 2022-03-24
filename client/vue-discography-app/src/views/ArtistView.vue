@@ -54,11 +54,12 @@ export default ({
           this.alertIndex = 0;
           this.message ="";
       },
-      //get the image at src if it exists, get the default pfp instead
+      //redirect to artist details page
       showDetails(id){
         this.currentArtist = this.listArtists[id];
         this.$router.push({ name: 'artistDetails', params: { id: this.currentArtist.id_artist } })
       },
+      //get the image at src if it exists, get the default pfp instead
       getImg(a){
         if(a.image === undefined || a.image == null || a.image.length == 0){
           return require("../assets/artists/default.png");
@@ -67,12 +68,15 @@ export default ({
           return this.imgSrc +  a.image;
         }
       },
+      //show artist form and hide list
       openForm(){
         this.displayList=false;
       },
+      //show list and hide form
       showList(){
         this.displayList=true;
       },
+      //update the artist list calling the db
       async updateList(){
         this.listArtists = [];
         await this.getListArtists().then(this.displayList=true);
@@ -88,13 +92,13 @@ export default ({
           this.alertIndex = 4;
       },
     },
-    mounted(){
+    mounted(){ //get all artists when mountend
       this.getListArtists();
     },
-    beforeCreate () {
+    beforeCreate () { //set gb color when creating
       document.querySelector('body').setAttribute('style', 'background:#111110')
     },
-    beforeUnmount () {
+    beforeUnmount () { //reset bg color when unmounting
       document.querySelector('body').setAttribute('style', '')
     },
 })
@@ -122,26 +126,22 @@ export default ({
 .col_0{
   grid-column: 1;
 }
-
 .col_1{
   grid-column : 2;
 }
-
 .col_2{
   grid-column: 3;
 }
-
 .col_3{
   grid-column: 4;
 }
-
 .col_4{
   grid-column: 5;
 }
-
 .col_5{
   grid-column: 6;
 }
+
 .artistList{
   margin-left : 10%;
   margin-right: 10%;
@@ -225,7 +225,6 @@ export default ({
     margin-left : 3%;
     margin-right: 3%;
   }
-
   .artistList{
     margin-left : 5%;
     margin-right: 5%;
@@ -250,11 +249,9 @@ export default ({
   .col_3{
     grid-column: 1;
   }
-
   .col_4{
     grid-column: 2;
   }
-
   .col_5{
     grid-column: 3;
   }
@@ -265,7 +262,6 @@ export default ({
 }
 
 @media screen and (max-width: 350px) {
-
   .col_2{
     grid-column: 1;
   }
@@ -275,21 +271,17 @@ export default ({
   .col_4{
     grid-column: 1;
   }
-
   .col_5{
     grid-column: 2;
   }
-
   .artistList{
     margin-left : 5%;
     margin-right: 5%;
   }
-
   .listArtists{
     padding-right: 2%;
     padding-left: 2%;
   }
-
   .artist{
     margin: 2%;
   }

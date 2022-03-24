@@ -1,8 +1,9 @@
 <template>
     <div class="songForm">
-    <p id="formSongTitle">New song :</p>
+      <form>
+      <p id="formSongTitle">New song :</p>
       <div class="newSong">
-          <input type="text" class="newSongInput" placeholder="Song title" v-model="songName">
+          <input type="text" class="newSongInput" placeholder="Song title" v-model="songName" minlength="1" required>
       </div>
       <div v-if="!takeFeats" class="showFeats">
           <p class="takeFeatsBtn" @click="openFeaturings">Add featurings</p>
@@ -19,9 +20,10 @@
           </div>
       </div>
       <div class="finalBtn">
-        <div class="submitSongBtn" @click="submitSong">Save</div>
+        <button class="submitSongBtn" @click="submitSong">Save</button>
         <div class="cancelBtn" @click="closeForm">Cancel</div>
       </div>
+    </form>
     </div>
     <AlertBox :alertIndex="alertIndex" :message="message" @alertClosed="resetAlert"/>
 
@@ -36,72 +38,79 @@ export default {
     name: 'SongForm',
     data(){
         return {
-            songName : this.name,
-            feats : [{ id : ''}],
-            id : 0,
-            listArtists : [],
-            takeFeats : !this.create,
-            printFeat : "Feats : ",
-            alertIndex : 0,
-            message : '',
-            song : {}
+            songName : this.name, //name of the song
+            feats : [{ id : ''}], //id of the artist in featuring on this song
+            id : 0, //id of the song : 0-> no song
+            listArtists : [], //list of all the artists
+            takeFeats : !this.create, //pre-open feats form if true, hide it if false
+            printFeat : "Feats : ", //string of featurings
+            alertIndex : 0, //index of an alert send
+            message : '', //message of alerts
+            song : {} //data of the song : empty if it's a create
         }
     },
     components: {vSelect, AlertBox},
     props : {
-        idAlbum : String,
-        idSong : Number,
-        name : String,
-        create : Boolean,
-        featurings : Array,
-        idArtist : Number,
+        idAlbum : String, //id of the songs album
+        idSong : Number, //id of the song
+        name : String, //name of the song
+        create : Boolean, //true if create form, false if update form
+        featurings : Array, //list of feats on the song
+        idArtist : Number, //id of the song's artist
     },
     emits : ['formClosed', 'errorLoading'],
     methods:{
+      //get all the artists in db
         async getArtists(){
             let url = this.$store.getters.getApiURL + "artists";
-            await axios.get(url).catch(function (error){
+            await axios.get(url).catch(function (error){ //get data or handling errors
                 this.$emit('errorLoading', error.message);
-            }).then(response => response.data.sort(function(a,b){
+            }).then(response => response.data.sort(function(a,b){ //sort data by artist.name
                 if(a.name.toLowerCase() < b.name.toLowerCase()){return -1}
                 if(a.name.toLowerCase() > b.name.toLowerCase()){return 1}
                 return 0;
-            })).then(response => this.listArtists = response);
-            this.removeArtistFromList();
+            })).then(response => this.listArtists = response); //put data in this.listArtists
+            this.removeArtistFromList(); //remove the song's author of list
         },
+        //post or put song in the db
         async submitSong(){
             let datas = {title : this.songName, album : this.idAlbum, feats : this.getFeatsArray()};
-            if(this.songName.length > 0){
-                if(this.create){
+            if(this.songName.length > 0){ //if the song title input isn't empty
+                if(this.create){ //if creation
                     let url = this.$store.getters.getApiURL + "songs";
-                    await axios.post(url, datas).catch(function (error){
+                    await axios.post(url, datas).catch(function (error){//post data or hanfdling error
                         this.alertIndex = 4;
                         this.message = error.message
-                    }).then(this.alertIndex = 1, this.message = "Song has been added");
+                    }).then(this.alertIndex = 1, this.message = "Song has been added");//show success notif
                 }
-                else{
+                else{ //if update
                     let url = this.$store.getters.getApiURL + "songs/" + this.idSong;
-                    await axios.put(url, datas).catch(function (error){
+                    await axios.put(url, datas).catch(function (error){ //post data or handling error
                         this.alertIndex = 4;
                         this.message = error.message;
-                    }).then(this.alertIndex = 1, this.message = 'Song has been updated');
+                    }).then(this.alertIndex = 1, this.message = 'Song has been updated');//showSuccesNotif
                 }
-                location.reload()
+                location.reload() //reload page to reload the album tracklisk
             }
         },
+        //add a song id to feat's list
         add(){
             this.feats.push({id : ''});
         },
+        //remove a song's id thos feat's list
         remove(index){
             this.feats.splice(index, 1);
         },
+        //show a featuring form
         openFeaturings(){
             this.takeFeats = true;
         },
+        //remove all feats of feat's list
         removeFeats(){
             this.takeFeats = false;
             this.feats = [{id : ''}];
         },
+        //to string feat's list
         showFeat(){
             this.printFeat = "Feats : "
             for(let f of this.feats){
@@ -111,6 +120,7 @@ export default {
                 }
             }
         },
+        //set feat's list to a compatible array with data submitting 
         setFeats(){
             if(this.featurings.length>0){
                 this.feats = []
@@ -119,6 +129,7 @@ export default {
                 this.feats.push({id : f.id_artist});
             }
         },
+        //get the name of the artist with id_artist = id
         getArtistName(id){
             for(let artist of this.listArtists){
                 if(artist.id_artist == id){
@@ -127,6 +138,7 @@ export default {
             }
             return "";
         },
+        //hide song's form
         closeForm(){
             this.$emit('formClosed')
         },
@@ -147,11 +159,12 @@ export default {
             this.alertIndex = 0;
             this.message ="";
         },
+        //remove the song's artist of this.listArtists
         removeArtistFromList(){
             let deleted = false
             let i = 0;
-            while(i<this.listArtists.length && !deleted){
-                if(this.listArtists[i].id_artist == this.idArtist){
+            while(i<this.listArtists.length && !deleted){ //while list hasnt been entirely red or the song artist hasn't been removed
+                if(this.listArtists[i].id_artist == this.idArtist){ 
                     this.listArtists.splice(i, 1);
                     deleted = true;
                 }
@@ -160,14 +173,14 @@ export default {
         }
     },
     watch:{
-        feats : {
+        feats : { //watching this.feats -> if updated -> update the string display of the list
             deep : true,
             handler(){
                 this.showFeat();
             }
         }
     },
-    mounted(){
+    mounted(){ //get data and set form when mounted
         this.getArtists();
         this.setFeats();
     },
@@ -196,6 +209,7 @@ export default {
   text-align: center;
   display: inline-flex;
 }
+
 .submitSongBtn{
   color : white;
   font-size: 14px;
@@ -205,6 +219,7 @@ export default {
   padding-right : 0;
   border-radius: 5px;
   margin-bottom: 10%;
+  border : none;
 }
 
 .addBtn, .submitSongBtn{
@@ -214,10 +229,12 @@ export default {
 .addBtn, .removeBtn{
   margin: 1%;
 }
+
 .addBtn{
   width: 15px;
   padding-left: 6px;
 }
+
 .removeBtn{
   width: 12px;
   padding-left : 7px;
@@ -240,6 +257,7 @@ export default {
   text-align: left;
   width: 100px;
 }
+
 .removeAllBtn{
   color: #E7891F;
   margin-bottom: 2%;

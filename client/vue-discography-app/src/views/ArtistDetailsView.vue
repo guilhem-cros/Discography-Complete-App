@@ -56,33 +56,39 @@ export default {
             let url = this.$store.getters.getApiURL + "artists/"+this.id;
             await axios.get(url).catch(function (error){ //getting the albums and handling errors
                 this.$route.push({name: error, params : {mess: error.message}})
-            }).then(response => (this.artistDatas = response.data));
+            }).then(response => (this.artistDatas = response.data)); //put date in this.artistDatas
         },
         //get the genre infos of the artist
         async getGenre(){
             let url = this.$store.getters.getApiURL + "genres/" + this.artistDatas.genre;
             await axios.get(url).catch(function (error){ //getting genre infos and handling errors
                 console.log(error.message)
-            }).then(response => this.genre = response.data)
+            }).then(response => this.genre = response.data)//put data in this.genre
         },
+        //load/get all needed data
         async loadAll(){
             await this.getDatas();
             this.getGenre();
         },
+        //get artist's picture path
         getImg(){
+          //if no picture path saved
           if(this.artistDatas.image === undefined || this.artistDatas.image == null || this.artistDatas.image.length == 0){
-            return require("../assets/artists/default.png");
+            return require("../assets/artists/default.png"); //return default picture path
           }
           else{
-            return this.imgSrc +  this.artistDatas.image;
+            return this.imgSrc +  this.artistDatas.image; //return complete artist picture path
           }
         },
+        //display artist form
         openForm(){
           this.updating=true;
         },
+        //reload page
         async reloadDetails(){
           location.reload();
         },
+        //show success notification
         showSuccess(values){
         this.message = "The artist " + values.name + " has been " + values.message + "."
         this.alertIndex = 1;
@@ -92,6 +98,7 @@ export default {
           this.message = message;
           this.alertIndex = 4;
         },
+        //change bg color of page and hide artis form
         showDetails(){
           document.querySelector('body').setAttribute('style', 'background:white')
           this.updating=false;
@@ -107,20 +114,22 @@ export default {
               this.delete()
           }
       },
+      //delete current artist
       async delete(){
           let url = this.$store.getters.getApiURL + "artists/" + this.id;
           await axios.delete(url).catch(function (error) { //delete the genre in the DB
             let message = error.message;
             this.showError(message)
           }).then(
-          this.$emit('success', this.artistDatas.name),
-          this.$router.push({ name: 'artists' }));
+          this.$emit('success', this.artistDatas.name), //success notification
+          this.$router.push({ name: 'artists' })); //redirect to artist list page
       },
     },
     props :{
-        id : String,
+        id : String, //id of the artist
     },
     computed:{
+      //to string other names of the artist (array -> string)
       toStringAlias(){
         if(this.artistDatas.other_names !== undefined || this.artistDatas.other_names != null){
           return this.artistDatas.other_names.join()
@@ -131,19 +140,19 @@ export default {
       },
     },
     async mounted(){
-        await this.loadAll();
+        await this.loadAll(); //get data when mounted
     },
-    beforeCreate () {
+    beforeCreate () { //set bg color before creating
       document.querySelector('body').setAttribute('style', 'background:white')
     },
-    beforeUnmount () {
+    beforeUnmount () { //set bg color to empty before creating
       document.querySelector('body').setAttribute('style', '')
     },
-    created(){
+    created(){ //watch router params 
       this.$watch(
-        () => this.$route.params,
+        () => this.$route.params,//if params modified
         () =>
-          location.reload()
+          location.reload() //reload page -> redirect to page with new params
       )
     }
 }
@@ -233,7 +242,6 @@ export default {
 .more{
   grid-column: 2;
   grid-row : 2/4;
-  margin-right:30%;
 }
 
 .a_albums{
@@ -256,6 +264,7 @@ export default {
 #mainName{
   color : #272727;
 }
+
 #alias{
   font-size:14px;
   color : #222;
@@ -278,12 +287,6 @@ export default {
   font-size: 14px;
 }
 
-@media screen and (max-width: 1550px){
-  .more{
-    margin-right: 10%;
-  }
-}
-
 @media screen and (max-width: 1050px){
   .detailPfp{
     width: 25vw;
@@ -292,17 +295,14 @@ export default {
   .banner{
     height : 24vw;
   }
-  .more{
-    margin-right: 5%;
-  }
 }
+
 @media screen and (max-width: 800px){
 
   .modifLogos{
     display: inline-flex;
     margin-left: 90%;
   }
-
   #deleteLogo, #updateLogo{
     margin-top: 5%;
     margin-right: 10%;
@@ -319,9 +319,6 @@ export default {
   .artistContent{
     margin-left : 1%;
     margin-right: 1%;
-  }
-  .more{
-    margin-right: 0;
   }
 }
 </style>

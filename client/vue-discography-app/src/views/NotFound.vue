@@ -11,7 +11,6 @@
 ._404{
   margin-top: 5%;
 }
-
 #errorImg{
   width: 150px;
 }

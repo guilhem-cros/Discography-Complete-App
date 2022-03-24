@@ -31,15 +31,12 @@ export default ({
   border-color: orange;
   border-width: 2px;
 }
-
 .loadError>p{
   font-size: 14px;
 }
-
 .loadError>h1{
   font-weight: bold;
 }
-
 #errMess{
   font-size : 12px;
 }

@@ -49,106 +49,121 @@ export default {
     name: 'AlbumDetailsView',
     data(){
         return {
-            albumData : {},
-            albumSongs : [],
-            errMessage: "",
-            artist : {},
-            lastComments : [],
+            albumData : {}, //album data
+            albumSongs : [], //songs in the album
+            errMessage: "", //error message
+            artist : {}, //artist of the album
+            lastComments : [], //last 5 comments (or less if not 5 in db) of the album
             monthNames : ["January", "February", "March", "April", "May", "June",
                                 "July", "August", "September", "October", "November", "December"
                             ],
-            alertIndex : 0,
-            isAddingSong : false,
+            alertIndex : 0, //index of notification
+            isAddingSong : false, //true if must show song's form, false if not
         }
     },
     props:{
-        idAlbum : String
+        idAlbum : String //id of the album
     },
     components:{SongForm, SongAndFeat},
     methods:{
+      //get data of the album
         async getAlbumDetails(){
             let url = this.$store.getters.getApiURL + "albums/" + this.idAlbum;
-            await axios.get(url).catch(function (error){
+            await axios.get(url).catch(function (error){ //get data or handling error
                 this.error = true;
                 this.errMessage = error.message;
-            }).then(response => this.albumData = response.data)
+            }).then(response => this.albumData = response.data) //put data in this.albumData
         },
+        //get all song in the album
         async getSongsOfAlbum(){
             let url = this.$store.getters.getApiURL + "songs/onAlbum/" + this.idAlbum;
-            await axios.get(url).catch(function (error){
+            await axios.get(url).catch(function (error){ //get data or handling error
                 this.error = true;
                 this.errMessage = error.message;
-            }).then(response => ( response.data.sort(function(a,b){
+            }).then(response => ( response.data.sort(function(a,b){ //sort songs by id
               if(a.id_song < b.id_song){return -1}
               if(a.id_song > b.id_song){return 1}
               return 0;
-            }))).then(response => this.albumSongs = response);
+            }))).then(response => this.albumSongs = response);//put data in this.albumSongs
         },
+        //get data of the album's artist
         async getMainArtist(){
             let url = this.$store.getters.getApiURL + "artists/" + this.albumData.artist;
-            await axios.get(url).catch(function(error){
+            await axios.get(url).catch(function(error){ //get data or handling error
                 this.error = true;
                 this.errMessage = error.message;
-            }).then(response=> (this.artist = response.data));
+            }).then(response=> (this.artist = response.data));//put data in this artist
         },
+        //get last comments of this album
         async getLastComs(){
             let url = this.$store.getters.getApiURL + "comments/last/" + this.idAlbum;
-            await axios.get(url).catch(function(error){
+            await axios.get(url).catch(function(error){ //get data or handling error
                 this.error = true;
                 this.errMessage = error.message;
-            }).then(response=> (this.lastComments = response.data));
+            }).then(response=> (this.lastComments = response.data)); //put data in this.lastComments
         },
+        //load and get all data needed to the view
         async loadAll(){
             await this.getAlbumDetails();
             await this.getSongsOfAlbum();
             await this.getMainArtist();
             await this.getLastComs();
         },
+        //display error page with message value
         showError(value){
             this.error = true;
             this.errMessage = value;
         },
+        //get the cover of the album
         getCover(){
-            if(this.albumData.cover === undefined || this.albumData.cover == null || this.albumData.cover.length == 0){
+            if(this.albumData.cover === undefined || this.albumData.cover == null || this.albumData.cover.length == 0){ //has a cover
                 return require("../assets/covers/default.jpg");
             }
-            else{
+            else{ //has no cover -> show default cover
                 return this.$store.getters.getApiURL + this.albumData.cover;
             }
         },
+        //redirect to artist details page
         showArtist(){
             this.$router.push({name: 'artistDetails', params: { id : this.artist.id_artist}});
         },
+        //redirect to album form page
         openForm(){
             this.$router.push({name : 'album', params : {idAlbum : this.idAlbum, artistName : this.artist.name}});
         },
+        //open a confirm pop asking to delete the album
         deleteConfirm(){
           if (window.confirm('Delete the album ' + this.albumData.title + ' ?')){
               this.delete()
           }
         },
+        //delete the album
         async delete(){
           let url = this.$store.getters.getApiURL + "albums/" + this.idAlbum;
-          await axios.delete(url).catch(function (error) { //delete the genre in the DB
+          await axios.delete(url).catch(function (error) { //delete the album or handling error
             let message = error.message;
             this.showError(message)
           }).then(
-          this.$router.push({ name: 'home' }));
+          this.$router.push({ name: 'home' })); //redirect to home page
       },
+      //show the song form
       openSongForm(){
         this.isAddingSong=true;
       },
+      //hide the song form
       hideForm(){
         this.isAddingSong=false;
       },
+      //remove song of index : index in album's songs list
       updateList(index){
         this.albumSongs.splice(index, 1)
       }
     },
-    mounted(){
+    mounted(){ //get all data when mounted
         this.loadAll();
     },
     computed:{
+      //return the album release as an array
         date(){
             if(this.albumData.release !==undefined){
                 let newDate = this.albumData.release.replace(/ /g, '-')
@@ -157,6 +172,7 @@ export default {
             }
             else return 0
         },
+        //return the title of the album in caps
         upperTitle(){
             if(this.albumData.title !== undefined){
                 let albumTitle = this.albumData.title.toUpperCase();
@@ -167,17 +183,17 @@ export default {
             }
         }
     },
-    beforeCreate () {
+    beforeCreate () { //set bg color tho whitte before create
       document.querySelector('body').setAttribute('style', 'background:white')
     },
-    beforeUnmount () {
+    beforeUnmount () { //set background color to empty before unmount
       document.querySelector('body').setAttribute('style', '')
     },
-    created(){
+    created(){ //watch router params to redirect to the good page in case of changes
       this.$watch(
         ()=> this.$route.params,
         () =>
-          location.reload()
+          location.reload() //reloading page -> redirecting
       )
     }
 }
@@ -256,7 +272,6 @@ export default {
   font-size: 14px;
 }
 
-
 .albumCover {
     width : 300px;
     height: 300px;
@@ -293,6 +308,7 @@ export default {
   grid-column: 1/3;
   grid-row : 1;
 }
+
 #commentsTitle{
   grid-column: 3;
   grid-row : 1;
@@ -381,22 +397,18 @@ export default {
   .addSongBtn{
     margin-left: 15%;
   }
-
     #tracklistTitle{
       grid-column: 1;
       text-align: center;
     }
-
     #commentsTitle{
       grid-column: 3;
       text-align: center;
     }
-
     .coms{
       grid-column: 3;
       margin-left : 15%
     }
-
     .tracklist{
       text-align: center;
       grid-column: 1/3;
@@ -407,7 +419,6 @@ export default {
   .addSongBtn{
     margin-left: 25%;
   }
-
     .albumBanner{
       height: 200px;
     }
@@ -415,35 +426,30 @@ export default {
       height: 150px;
       width: 150px;
     }
-
     #tracklistTitle{
       grid-column: 1;
       grid-row: 1;
     }
-
     #commentsTitle{
       grid-column: 1;
       grid-row: 3;
     }
-
     .coms{
       grid-column: 1;
       grid-row: 4;
       text-align: center;
       margin-left: 0;
     }
-
     .comment{
       margin-bottom: 5%;
     }
-
     .tracklist{
       grid-column: 1;
       grid-row: 2;
       margin-bottom: 3%;
     }
-
 }
+
 @media screen and (max-width: 500px) {
     .albumBanner{
       height: 150px;
@@ -458,7 +464,6 @@ export default {
       margin-right: 0;
       grid-column: 1/6;
     }
-
     .modifLogos{
       grid-column: 6;
     }

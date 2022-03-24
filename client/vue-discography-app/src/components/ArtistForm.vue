@@ -4,7 +4,7 @@
         <p id="reqInfo">* required</p>
         <form class="artistForm" @submit.prevent="submitDatas">
             <label id="artistNameLab" for="artistName">*Name :</label>
-            <input id="artistName" type="text" name="artistName" v-model="name" placeholder="The name of the artist"  minlength="3" required>
+            <input id="artistName" type="text" name="artistName" v-model="name" placeholder="Name of the artist"  minlength="3" required>
             <label id="artistOthersLab" for="artistOthers">AKA : </label>
             <input id="artistOthers" type="text" name="artistOthers" placeholder="Separate names by commas" v-model="other_names"/>
             <label id="genreLab">*Main genre :</label>
@@ -22,7 +22,7 @@
                 <img class="pic" :src="currImg" :alt="this.artist.name + '_picture'"/>
             </div>
             <CoversSlideshow class="slideshow" v-else/>
-            <button class="submitB" type="button" @click="submitData">Submit</button>
+            <button class="submitB" @click="submitData">Submit</button>
       </form>
       <div class="backB" @click="goBack">
         <p id="backText">Back</p>
@@ -42,7 +42,7 @@ export default {
             other_names : this.artist.other_names==null ? "" : this.artist.other_names.toString(), //others names of the artist
             genre : this.artist.genre, //genre of the artist
             updates : false, //boolean describing if updates has been made on the db using the form
-            picture : this.create,
+            picture : this.create, //boolean : true if picture must be show, false instead
             currImg : this.setCurrImg(),
             artistPicture : null,
         }
@@ -69,26 +69,27 @@ export default {
         selectGenre(event){
             this.genre=event.target.value;
         },
+        //post or update data on the db
         async submitData(){
-            const datas = new FormData()
+            const datas = new FormData() //form of data pushed
             datas.append('name', this.name)
             datas.append('other_names', this.setOtherNames)
             datas.append('genre', this.genre);
-            if(this.artistPicture != null){
+            if(this.artistPicture != null){ //if a picture has been provide -> add it to the data of submit
                 datas.append('artistImage', this.artistPicture, this.artistPicture.name);
             }
-            if(this.name.length >=3){
+            if(this.name !== undefined && this.genre !==undefined && this.genre!=null){ if(this.name.length>=3){ //if the name and genre entered are not empty
                 let url = this.$store.getters.getApiURL + "artists";
-                if(this.create){
-                    await axios.post(url, datas).catch(function (error){
+                if(this.create){//if it's a creation
+                    await axios.post(url, datas).catch(function (error){//create or handling error
                         let message = error.message;
-                        this.$emit('error', message) //emit erro to display alert
+                        this.$emit('error', message) //emit error to display alert
                     }).then(
                         this.$emit("updated", {name : this.name, message : "created"})
                     );
                 }
-                else{
-                    await axios.put(url + '/' +  this.artist.id_artist, datas).catch(function (error){
+                else{//updating form
+                    await axios.put(url + '/' +  this.artist.id_artist, datas).catch(function (error){//update or handling error
                         let message = error.message;
                         this.$emit("error", message);//emit error to display an alert
                     }).then(
@@ -96,14 +97,17 @@ export default {
                         this.$emit("update")
                     );
                 }
+                //update has been made -> true
                 this.updates = true;
+                //reseting values
                 this.name = "";
                 this.genre = null;
                 this.other_names=null;
                 this.picture = this.create;
                 this.artistPicture = null;
-            }
+            }}
         },
+        //set the img displayed depending of it url is saved in date or not
         setCurrImg(){
             if(this.artist.image === undefined || this.artist.image == null || this.artist.image.length == 0){
                 return require("../assets/artists/default.png");
@@ -112,12 +116,14 @@ export default {
                 return this.$store.getters.getApiURL +  this.artist.image;
             }
         },
+        //change the preview of the image of the artist
         showPreview(e){
             this.picture = false;
             const file = e.target.files[0];
             this.currImg = URL.createObjectURL(file);
             this.artistPicture = file;
         },
+        //hide form and show list of artists or artist details (depends of it's create or update)
         goBack(){
             if(this.updates){
                 this.$emit('updateList')
@@ -132,14 +138,15 @@ export default {
         title(){
             return this.create ? "Add an artist :" : "Update the artist :"
         },
+        //set the alias of the artist in an acceptable list form submit
         setOtherNames(){
             return '{' + this.other_names + '}';
         },
     },
     mounted(){
-        this.getGenres();
+        this.getGenres(); //get genres data when mounted
     },
-    beforeCreate () {
+    beforeCreate () { //set bg color before creating and displaying
       document.querySelector('body').setAttribute('style', 'background:#111110')
     },
 }
@@ -196,6 +203,7 @@ export default {
   display: inline-flex;
   flex-direction: column;
 }
+
 #picInput > *{
     margin: 0 auto;
 }
@@ -337,34 +345,28 @@ export default {
     grid-column : 1;
     width : 90%;
   }
-  
   #artistPic{
     grid-column: 1;
     grid-row: 7;
     text-align: center;
   }
-
   .slideshow{
     grid-column: 1;
     grid-row: 7;
   }
-
   #artistOthersLab{
     grid-row: 3;
     grid-column : 1;
   }
-
   #artistOthers{
     grid-row: 4;
     grid-column: 1;
     width : 90%;
   }
-
   #genreLab{
     grid-column: 1;
     grid-row: 5;
   }
-
   #picInput{
     grid-column : 1;
     grid-row: 8;

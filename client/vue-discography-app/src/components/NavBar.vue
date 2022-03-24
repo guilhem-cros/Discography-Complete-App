@@ -2,9 +2,8 @@
   <nav>
     <router-link :to="{name : 'home'}">Home</router-link>  |
     <router-link :to="{name : 'artists'}">Artists</router-link> |
-    <router-link :to="{name : 'album', params:{idAlbum : -1, artistName: ''}}">Add an Album</router-link> |
     <router-link :to="{name: 'genres'}">Genres</router-link> |
-    <router-link :to="{name : 'albumDetails', params: { idAlbum : 1}}">Album Details</router-link> |
+    <router-link :to="{name : 'album', params:{idAlbum : -1, artistName: ''}}">Add an Album</router-link> |
     <router-link :to="{name : 'about'}">About</router-link>
   </nav>
 </template>

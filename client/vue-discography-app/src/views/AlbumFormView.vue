@@ -4,10 +4,10 @@
         <p id="reqInfo">* required</p>
         <form class="albumForm" @submit.prevent="submitDatas">
             <label id="albumTitleLab" for="albumTitle">*Title :</label>
-            <input id="titleInput" type="text" name="albumTitle" v-model="this.title" placeholder="Title of the album"  minlength="1" required>
+            <input id="titleInput" type="text" name="albumTitle" v-model="this.title" placeholder="Title of the album"  minlength="1" required/>
             <div id="artistLab" for="searchArtist">*By :</div>
             <div class="selectBox">
-                <v-select label="name" class="select" :options="this.listArtists" v-model="this.idArtist" :reduce="name => name.id_artist" required placeholder="Search for an artist"></v-select>
+                <v-select label="name" class="select" :options="this.listArtists" v-model="this.idArtist" :reduce="name => name.id_artist" placeholder="Search for an artist"></v-select>
             </div>
             <label id="albumReleaseLab" for="albumRelease">**Release :</label>
             <input id="albumRelease" name="albumRelease" type="date" v-model="this.date" required/>
@@ -20,7 +20,7 @@
                 <img class="cover" :src="currImg" :alt="this.title + '_picture'"/>
             </div>
             <img class="cover" src="../assets/covers/default.jpg" alt="default_cover" v-else/>
-            <button class="submitAlbum" type="button" @click="submitData">Submit</button>
+            <button class="submitAlbum" @click="submitData">Submit</button>
       </form>
       <div class="backB" @click="goBack">
         <p id="backText">Back</p>
@@ -40,54 +40,59 @@ export default{
     name: 'AlbumForm',
     data(){
         return{
-            create : this.idAlbum == -1,
-            album : {title : "", release : null, artist : null, cover : ""},
-            listArtists : [],
-            title : "",
-            updates : false,
-            picture : this.create,
-            name : this.artistName,
-            idArtist : null,
-            currImg : "",
-            alertIndex : 0,
-            message : "",
-            errMessage : "",
-            albumCover : null,
-            date : "",
+            create : this.idAlbum == -1, //true if creation, false if update
+            album : {title : "", release : null, artist : null, cover : ""}, //the updating album of empty if create
+            listArtists : [],//all artists list
+            title : "", //title of the album
+            updates : false, 
+            picture : this.create, //true if there is a picture to show, false if not
+            name : this.artistName, //name of the album's artist
+            idArtist : null, //id of the album artist
+            currImg : "", //current image displayed
+            alertIndex : 0, //index of thez alert
+            message : "", //message of the alert (notif)
+            errMessage : "", //error page's message
+            error : false, //true if showing error page, false if not
+            albumCover : null, //path to the album cover
+            date : "", //date of release of the album
         }
     },
     props:{
-        idAlbum : String,
-        artistName : String,
+        idAlbum : String, //id of the album -> -1 id creating
+        artistName : String, //name of the album's artist -> empty if creating
     },
     components: {AlertBox, vSelect},
     methods : {
+      //get all artists
         async getArtists(){
             let url = this.$store.getters.getApiURL + "artists";
-            await axios.get(url).catch(function (error){
+            await axios.get(url).catch(function (error){ //get artists or handle erroe
                 this.error=true;
                 this.errMessage = error.message;
-            }).then(response => response.data.sort(function(a,b){
+            }).then(response => response.data.sort(function(a,b){ //sort artists by name
                 if(a.name.toLowerCase() < b.name.toLowerCase()){return -1}
                 if(a.name.toLowerCase() > b.name.toLowerCase()){return 1}
                 return 0;
             })).then(response => this.listArtists = response);
         },
+        //get album data
         async getAlbum(){
             let url = this.$store.getters.getApiURL + "albums/" + this.idAlbum;
-            await axios.get(url).catch(function (error){
+            await axios.get(url).catch(function (error){ //get data or handle error
                 this.error=true;
                 this.errMessage = error.message;
-            }).then(response => this.album = response.data);
+            }).then(response => this.album = response.data); //put data in this .album
         },
+        //prepare album to be displayed in form
         async getCurrAlbum(){
-            if(!this.create){
-                await this.getAlbum();
+            if(!this.create){ //if it's an update form
+                await this.getAlbum(); //get album data
+                //prepare ans assign data
                 this.date = this.album.release.substring(0, 10);
                 this.idArtist = this.album.artist;
                 this.title = this.album.title;
             }
-            this.setCurrImg();
+            this.setCurrImg(); //set img to display
 
         },
         //reset the parameters for the next alert to show
@@ -95,6 +100,7 @@ export default{
             this.alertIndex = 0;
             this.message ="";
         },
+        //set this.currImg to the path to album img if it exists, if not  -> default image's path
         setCurrImg(){
             if(this.album.cover === undefined || this.album.cover == null || this.album.cover.length == 0){
                 this.currImg = require("../assets/covers/default.jpg");
@@ -103,49 +109,52 @@ export default{
                 this.currImg=  this.$store.getters.getApiURL +  this.album.cover;
             }
         },
+        //show the preview of an image uploaded in input by user
         showPreview(e){
             this.picture = false;
             const file = e.target.files[0];
             this.currImg = URL.createObjectURL(file);
             this.albumCover = file;
         },
+        //submit data
         async submitData(){
             if(this.title.length >= 1 && this.date.length > 1 && this.idArtist != null){
                 const datas = new FormData()
                 datas.append('title', this.title)
                 datas.append('release', this.date)
                 datas.append('artist', this.idArtist);
-                if(this.albumCover != null){
-                    datas.append('albumCover', this.albumCover, this.albumCover.name);
+                if(this.albumCover != null){ //if an image has been passed
+                    datas.append('albumCover', this.albumCover, this.albumCover.name); //add image to data
                 }
                 if(this.title.length >=1){
                     let url = this.$store.getters.getApiURL + "albums";
-                    if(this.create){
-                        await axios.post(url, datas).catch(function (){
+                    if(this.create){ //if create
+                        await axios.post(url, datas).catch(function (){ //post data and handling errors
                             this.message = "An error occurred, please try again";
                             this.alertIndex = 4; //emit error to display alert
                         }).then( response =>
-                            this.$router.push({name : 'albumDetails', params: {idAlbum : response.data.id_album}})
+                            this.$router.push({name : 'albumDetails', params: {idAlbum : response.data.id_album}}) //redirect to this new albums details page
                         );
                     }
                     else{
-                        await axios.put(url + '/' +  this.idAlbum, datas).catch(function (){
+                        await axios.put(url + '/' +  this.idAlbum, datas).catch(function (){ //put data or handling error
                             this.message = "An error occurred, please try again";
                             this.alertIndex = 4;
                         }).then(
-                            this.$router.push({name : 'albumDetails', params : {idAlbum : this.idAlbum}})
+                            this.$router.push({name : 'albumDetails', params : {idAlbum : this.idAlbum}}) //redirect to this album details page
                         );
                     }
-                    this.picture = this.create
+                    this.picture = this.create //reinit this.picture
                 }
             }
         },
+        //go back to precedent page
         goBack(){
-            if(this.create){
-                this.$router.push({name : 'home'});
+            if(this.create){ //if create
+                this.$router.push({name : 'home'}); //back to homepage
             }
-            else{
-                this.$router.push({name: 'albumDetails', params: { id: this.idAlbum}})
+            else{ //if update
+                this.$router.push({name: 'albumDetails', params: { id: this.idAlbum}}) //back to details page
             }
         }
     },
@@ -160,17 +169,17 @@ export default{
         this.getArtists();
         this.getCurrAlbum();
     },
-    beforeCreate () {
+    beforeCreate () { //set bg color before creating
       document.querySelector('body').setAttribute('style', 'background:#111110');
     },
-    beforeUnmount () {
+    beforeUnmount () { //set bg color empty before unmounting
       document.querySelector('body').setAttribute('style', '')
     },
     created() {
-    this.$watch(
-      () => this.$route.params,
+    this.$watch( //watch router params
+      () => this.$route.params, //if params are modified -> redirect to new page
       () => {
-        location.reload()
+        location.reload() //reload -> redirect to params's linked page
       }
     )
   },
@@ -188,6 +197,7 @@ export default{
   text-align: left;
   font-weight : bold;
 }
+
 .albumForm{
   margin-left : 5%;
   margin-top : 2%;
@@ -215,10 +225,12 @@ export default{
   grid-row : 3;
   line-height: 1.4em;
 }
+
 .selectBox{
   grid-row : 4;
   width : 80%;
 }
+
 .select{
   background-color: white;
   border-radius: 3px;
@@ -234,6 +246,7 @@ export default{
   line-height: 1.4em;
   grid-row : 5;
 }
+
 #albumRelease{
   grid-row : 6;
   width : 80%;
@@ -243,14 +256,17 @@ export default{
   border : 2px grey solid;
   border-radius : 3px;
 }
+
 #albumCover{
   grid-column: 2;
   grid-row: 1/6;
   text-align: center;
 }
+
 #titleInput, #albumRelease, .select{
   margin-bottom: 3%;
 }
+
 .submitAlbum{
   grid-row : 8;
   grid-column: 1;
@@ -283,6 +299,7 @@ export default{
   padding: 1%;
   background-color: #FFE469;
 }
+
 #coverInput{
   text-align: center;
   grid-row : 6;
@@ -290,6 +307,7 @@ export default{
   display: inline-flex;
   flex-direction: column;
 }
+
 #coverInput > *{
     margin: 0 auto;
 }
@@ -308,6 +326,7 @@ export default{
   cursor: pointer;
   color : gold;
 }
+
 #reqInfo, #releaseInfo{
   color: grey;
   font-size : 12px;
@@ -351,7 +370,6 @@ export default{
   .submitAlbum{
     grid-row: 11;
   }
-
   #titleInput, #albumRelease, .selectBox{
     width : 90%;
   }

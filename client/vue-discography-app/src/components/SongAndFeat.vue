@@ -24,51 +24,58 @@ export default {
     emits : ['loadingError', 'deleted'],
     data(){
         return {
-            feats : [],
-            update : false
+            feats : [], //all the artist presents on the song as featuring
+            update : false //boolean of the displaying state of the songs's form
         }
     },
     components: {SongForm},
     props:{
-        idSong : Number,
-        songName : String,
-        index : Number,
-        idAlbum : String,
-        idArtist : Number
+        idSong : Number, //id of the song
+        songName : String, //name of the song
+        index : Number, //index of the song in the AlbumDetails Vue
+        idAlbum : String, //id of the song's album
+        idArtist : Number //id of the song's artist
     },
     methods: {
+      //get the feats on a pointed song
         async getFeats(){
             let url = this.$store.getters.getApiURL + "songs/feats/" + this.idSong;
-            await axios.get(url).catch(function (error){
+            await axios.get(url).catch(function (error){ //get data and handling error
                 this.$emit('loadingError', error.message);
-            }).then(response => this.feats = response.data);
+            }).then(response => this.feats = response.data); //put data in this.feats
         },
+        //redirect to the artist details page of the artist with id_artist ) index
         showArtist(index){
             this.$router.push({name: 'artistDetails', params: { id : this.feats[index].id_artist}});
         },
+        //open a popup asking to confirm the suppression of a a song
         confirmDelete(){
           if(window.confirm("Remove " + this.songName + " from the album ?")){
             this.delete()
           }
         },
+        //delete a song in the list of AlbumDetails view and in the db
         async delete(){
           let url = this.$store.getters.getApiURL + "songs/" + this.idSong;
-          await axios.delete(url).catch(function (error){
+          await axios.delete(url).catch(function (error){ //deleting the song in db or handling error
             this.$emit("loadingError", error.message);
-          }).then(this.$emit('deleted', this.index));
+          }).then(this.$emit('deleted', this.index)); //delete the song in the details view's song list
         },
+        //display the create/update form
         openForm(){
           this.update = true;
         },
+        //show an error with message : message
         showError(message){
           this.$emit('loadingError', message);
         },
+        //hide the create/update form
         hideForm(){
           this.update = false;
         }
     },
     mounted() {
-        this.getFeats();
+        this.getFeats(); //get all feats of the song when mounted
     },
 }
 
@@ -85,6 +92,7 @@ export default {
   color : #1C1C1C;
   margin-left : 30%;
 }
+
 .song{
     display: flex;
   }
@@ -119,7 +127,6 @@ export default {
 .updateImg{
   display: flex;
 }
-
 
 @media screen and (max-width: 900px) {
     .tracks{

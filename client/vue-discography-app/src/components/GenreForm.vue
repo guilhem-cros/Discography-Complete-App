@@ -26,7 +26,6 @@ export default {
     return {
       name : this.genre.name, //name of the current genre : empty if it's a creation
       desc : this.genre.desc, //desc of the current genre : empty if it's a creation
-      updates : false //boolean describing if updates has been made on the db with the form
     }
   },
   components: { CoversSlideshow},
@@ -48,32 +47,24 @@ export default {
             let message = error.message
             this.$emit('error', message); //emit error to dispay an alert
           }).then(
-          this.$emit("updated", {name : this.name, message : "updated"}), //emit updated to display a succes alert
+          this.$emit("updated", {name : this.name, message : "updated"}), //emit updated to display a success alert
           this.$emit('goBackAndUpdate'));
         }
         //resetting values
         this.name = "";
         this.desc = "";
-        //update has been made -> true
-        this.updates = true
+
         location.reload();
       }
     },
     //emit a message to hide form and display list
     goBack(){
-      //if some updates have been made
-      if(this.updates){
-        this.$emit('goBackAndUpdate');
-      }
-      else{
-        this.$emit('goBack');
-      }
-      this.updates = false; //resetting the update param
+      this.$emit('goBack');
     }
   },
   props : {
-    genre : Object,
-    creation : Boolean,
+    genre : Object, //empty if it's a create, the genre updating if it's an update
+    creation : Boolean, //true if creating, false if updating
   },
   computed : {
     //title of the page : depends if it's a creation or an update form
@@ -206,30 +197,25 @@ export default {
     grid-row : 1;
     grid-column: 1;
   }
-
   #genreName{
     grid-row: 2;
     grid-column: 1;
     width : 90%
   }
-
   #slideshow{
     grid-column: 1;
     grid-row: 6;
     margin-top: 10%;
     margin-bottom : 5%;
   }
-
   #genreDescLab{
     grid-row: 3;
     grid-column: 1;
   }
-
   .genreForm{
     margin-left : 2%;
     margin-right: 2%;
   }
-
   #genreDesc{
     grid-row: 4;
     grid-column: 1;

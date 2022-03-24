@@ -14,8 +14,8 @@
         </div>
       </div>
   </div>
-  <GenreForm :genre="{}" :creation="true" v-if="this.displayIndex==1" @goBack="showList" @goBackAndUpdate="showUpdatedList" @updated="showSuccess" @error="showError"/>
-  <GenreForm :genre="currentGenre" :creation="false" v-if="this.displayIndex==2"  @goBack="showList" @goBackAndUpdate="showUpdatedList" @updated="showSuccess" @error="showError"/>
+  <GenreForm :genre="{}" :creation="true" v-if="this.displayIndex==1" @goBack="showList" @updated="showSuccess" @error="showError"/>
+  <GenreForm :genre="currentGenre" :creation="false" v-if="this.displayIndex==2"  @goBack="showList" @updated="showSuccess" @error="showError"/>
   <AlertBox :alertIndex="alertIndex" :message="message" @alertClosed="resetAlert"/>
 </template>
 
@@ -97,22 +97,16 @@ export default {
       showList(){
           this.displayIndex=0;
       },
-      //update the list of genre (after an update or a creation)
-      async showUpdatedList(){
-          this.listGenres = [];
-          await this.getListGenre();
-          this.showList();
-      },
       //reset the parameters for the next alert to show
       resetAlert(){
           this.alertIndex = 0;
           this.message ="";
       }
   },
-  beforeCreate () {
+  beforeCreate () { //set bg color when creating
     document.querySelector('body').setAttribute('style', 'background:#111110')
   },
-  beforeUnmount () {
+  beforeUnmount () { //unset bg color when unmounting
     document.querySelector('body').setAttribute('style', '')
   },
   mounted(){
