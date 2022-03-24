@@ -104,7 +104,7 @@ async function searchSong(req,res){
     try{
         const text = req.params.text;
         const songs = await pool.query(queries.searchSong,
-        [text+'%']
+        ['%'+text+'%']
         );
         res.status(200).json(songs.rows)
     } catch (err) {

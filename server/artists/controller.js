@@ -109,7 +109,7 @@ async function searchArtist(req, res){
     try{
         const text = req.params.text;
         const artists = await pool.query(queries.searchArtist,
-        [text+'%']
+        ['%'+text+'%']
         );
         res.status(200).json(artists.rows);
     } catch(err){

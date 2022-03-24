@@ -84,7 +84,7 @@ async function searchAlbum(req, res){
     try{
         const text = req.params.text;
         const albums = await pool.query(queries.searchAlbum,
-        [text+'%']
+        ['%'+text+'%']
         );
         res.status(200).json(albums.rows);
     } catch (err){
