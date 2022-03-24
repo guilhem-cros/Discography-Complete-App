@@ -1,7 +1,7 @@
 <template>
   <div class="head">
     <div class="search">
-      <input type="text" id="searchBar" placeholder="Search for albums & more">
+      <input type="text" id="searchBar" placeholder="Search for albums & more" v-model="searchedText" @input="searchFiveSongs">
       <img src="../assets/search.png" width="auto" height="24px" alt="research button" id="research_butt">
     </div>
     <div class="title">
@@ -18,12 +18,64 @@
 </template>
 
 <script>
+import axios from 'axios';
 import NavBar from './NavBar.vue';
 
 export default {
   components: { NavBar },
-  name : "GlobalHeader"
+  name : "GlobalHeader",
+  data(){
+    return{
+      searchedText : "",
+      url : this.$store.getters.getApiURL,
+      artists :  [],
+      albums : [],
+      songs: []
+    }
+  },
+  methods: {
+    async searchFiveArtists(){
+      if(this.searchedText.length > 0){
+        let url = this.url + 'artists/search/' + this.searchedText;
+        await axios.get(url).catch(function (error){
+          console.log(error)
+        }).then(response => (response.data.sort(function(a,b){
+          if(a.name.toLowerCase() < b.name.toLowerCase()){return -1}
+          if(a.name.toLowerCase() > b.name.toLowerCase()){return 1}
+          return 0;
+        }))).then(response => this.artists = response.slice(0,5))
+      }
+    },
+    async searchFiveAlbums(){
+      if(this.searchedText.length > 0){
+        let url = this.url + 'albums/search/' + this.searchedText;
+        await axios.get(url).catch(function (error){
+          console.log(error)
+        }).then(response => (response.data.sort(function(a,b){
+          if(a.title.toLowerCase()<b.title.toLowerCase()){return -1}
+          if(a.title.toLowerCase()>b.title.toLowerCase()){return 1}
+          return 0;
+        }))).then(response => this.albums = response.slice(0,5));
+      }
+    },
+    async searchFiveSongs(){
+      if(this.searchedText.length > 0){
+        let url = this.url + 'songs/search/' + this.searchedText;
+        await axios.get(url).catch(function (error){
+          console.log(error)
+        }).then(response => (response.data.sort(function(a,b){
+          if(a.song_title.toLowerCase()<b.song_title.toLowerCase()){return -1}
+          if(a.song_title.toLowerCase()>b.song_title.toLowerCase()){return 1}
+          return 0;
+        }))).then(response => this.songs = response.slice(0,5));
+        console.log(this.songs)
+      }
+    }
+
+  }
+  
 }
+
 
 </script>
 
@@ -96,11 +148,6 @@ export default {
 #sign_in_butt:hover, #sign_up_butt:hover{
   cursor: pointer;
   opacity: 0.7;
-}
-
-#research_butt:hover{
-  cursor: pointer;
-  zoom: 110%;
 }
 
 #title:hover{
