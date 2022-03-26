@@ -34,6 +34,7 @@
             <p class="pseudo">{{com.author}}</p>
             <p class="comContent">{{com.content}}</p>
         </div>
+        <CommentForm :idAlbum="this.idAlbum"/>
     </div>
   </div>
   </div>
@@ -43,6 +44,7 @@
 import axios from 'axios';
 import SongAndFeat from '../components/SongAndFeat.vue';
 import SongForm from '../components/SongForm.vue';
+import CommentForm from '@/components/CommentForm.vue';
 
 
 export default {
@@ -64,7 +66,7 @@ export default {
     props:{
         idAlbum : String //id of the album
     },
-    components:{SongForm, SongAndFeat},
+    components:{ SongForm, SongAndFeat, CommentForm },
     methods:{
       //get data of the album
         async getAlbumDetails(){

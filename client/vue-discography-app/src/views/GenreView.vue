@@ -112,8 +112,6 @@ export default {
   mounted(){
       this.getListGenre();
   },
-  computed:{
-  }
 }
 </script>
 

@@ -79,7 +79,8 @@ export default ({
       //update the artist list calling the db
       async updateList(){
         this.listArtists = [];
-        await this.getListArtists().then(this.displayList=true);
+        await this.getListArtists()
+        this.displayList = true;
       },
       //display success alert
       showSuccess(values){
@@ -92,7 +93,7 @@ export default ({
           this.alertIndex = 4;
       },
     },
-    mounted(){ //get all artists when mountend
+    mounted(){ //get all artists when mounted
       this.getListArtists();
     },
     beforeCreate () { //set gb color when creating

@@ -49,7 +49,13 @@ const routes = [
     component: () => import('../views/RequestError.vue'),
     props : true
   },
-  //catchall 404 
+  {
+    path: '/connect',
+    name : 'connect',
+    component: () => import('../views/SignFormView.vue'),
+    props : true
+  },
+  //catchall 404
   {
     path : '/:catchAll(.*)',
     name : 'notFound',

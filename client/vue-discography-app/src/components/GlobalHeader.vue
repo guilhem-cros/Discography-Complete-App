@@ -29,12 +29,13 @@
       </div>
     </div>
     <div class="title">
-      <h1 id="title">音楽</h1>
+      <h1 id="title" @click="goHome">音楽</h1>
     </div>
     <div class="sign_panel">
       <div>
-        <p id="sign_in_butt">SIGN IN</p>
-        <p id="sign_up_butt">SIGN UP</p>
+        <p id="sign_in_butt" @click="signIn" v-if="!this.$store.getters.user.loggedIn">SIGN IN</p>
+        <p id="sign_up_butt" @click="signUp" v-if="!this.$store.getters.user.loggedIn">SIGN UP</p>
+        <p id="signOut" @click="signOut" v-if="this.$store.getters.user.loggedIn">Disconnect</p>
       </div>
     </div>
   </div>
@@ -44,6 +45,7 @@
 <script>
 import axios from 'axios';
 import NavBar from './NavBar.vue';
+import {auth} from '../firebase-config';
 
 export default {
   components: { NavBar },
@@ -136,7 +138,22 @@ export default {
       }
       else{
         return this.url +  artist.image; //return full path
-      } 
+      }
+    },
+    signIn(){
+      this.$router.push({name : 'connect', params : {isSignIn : true, currentPage : this.$route.name}})
+    },
+    signUp(){
+      this.$router.push({name : 'connect', params : {isSignIn : false, currentPage : this.$route.name}})
+    },
+    goHome(){
+      this.$router.push({name : 'home'});
+    },
+    signOut() {
+        auth.signOut()
+        .then(() => {
+          this.$router.push({name: "home"});
+        });
     }
   }
 
@@ -307,6 +324,19 @@ export default {
   align-items: center;
 }
 
+#signOut{
+  border: 1px black solid;
+  border-radius: 3px;
+  width : 60%;
+  font-size: 14px;
+  margin-left : 10%;
+}
+
+#signOut:hover{
+  cursor : pointer;
+  opacity: .8;
+}
+
 /*Under 1250 px*/
 @media screen and (max-width: 1250px){
   .sign_panel > div{
@@ -320,6 +350,18 @@ export default {
   .search_results{
     top : calc(41px + 2rem)
   }
+
+  #signOut{
+    margin-left: 60%;
+    width : 30%;
+  }
+}
+
+@media screen and (max-width: 1250px){
+    #signOut{
+      margin-left: 50%;
+      width : 40%;
+    }
 }
 
 /*Under 680 px*/
@@ -353,6 +395,10 @@ export default {
     top : calc(41px + 6rem);
     width: 350px;
   }
+  #signOut{
+    margin-left: 40%;
+    width : 60%;
+  }
 }
 
 @media screen and (max-width: 450px){
@@ -361,11 +407,19 @@ export default {
     top : calc(41px + 5rem);
     left : 1%;
   }
+  #signOut{
+    margin-left: 30%;
+    width : 80px;
+  }
 }
 
 @media screen and (max-width: 350px){
   .search_results{
     width: 275px;
+  }
+  #signOut{
+    margin-left: 15%;
+    width : 80px;
   }
 }
 
