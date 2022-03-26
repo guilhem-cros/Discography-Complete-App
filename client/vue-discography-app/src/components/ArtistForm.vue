@@ -36,6 +36,8 @@
 <script>
 import CoversSlideshow from './CoversSlideshow.vue';
 import axios from 'axios';
+import Notiflix from 'notiflix';
+
 export default {
     name: 'ArtistForm',
     data(){
@@ -60,8 +62,7 @@ export default {
         async getGenres(){
             let url = this.$store.getters.getApiURL + "genres";  //url to te request datas
             await axios.get(url).catch(function (error){ //getting datas and handling errors
-                let message = error.message;
-                this.$emit('error', message)
+                Notiflix.Notify.failure(error.message, {closeButton:true});
             }).then(response => (response.data.sort(function(a,b){ //sort the returned list by name of genre
                 if(a.genre.toLowerCase() < b.genre.toLowerCase()){return -1}
                 if(a.genre.toLowerCase() > b.genre.toLowerCase()){return 1}
@@ -86,7 +87,7 @@ export default {
                 if(this.create){//if it's a creation
                     await axios.post(url, datas).catch(function (error){//create or handling error
                         let message = error.message;
-                        this.$emit('error', message) //emit error to display alert
+                        this.$emit("error", message);//emit error to display an alert
                     }).then(
                         this.$emit("updated", {name : this.name, message : "created"})
                     );

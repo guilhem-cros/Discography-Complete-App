@@ -12,24 +12,21 @@
   </div>
   </div>
   <ArtistForm :artist="{}" :create="true" v-else @goBack="showList" @updateList="updateList" @updated="showSuccess" @error="showError"/>
-  <AlertBox :alertIndex="alertIndex" :message="message" @alertClosed="resetAlert"/>
 </template>
 
 <script>
-import AlertBox from '../components/AlertBox.vue';
+
 import ArtistForm from '../components/ArtistForm.vue'
 import axios from 'axios';
+import Notiflix from 'notiflix';
 
 export default ({
     name : 'ArtistView',
-    components: {AlertBox, ArtistForm},
+    components: {ArtistForm},
     data(){
         return{
             listArtists : [], //list of all artists
             displayList : true, //index of what is currently displayed in the view
-            alertIndex : 0, //index of the alert notif : 0 = hide alerts
-            message : "", //message for the alerts notifications
-            errMessage : "",//message send during the error
             currentArtist : {},
             imgSrc : this.$store.getters.getApiURL,
         }
@@ -40,19 +37,13 @@ export default ({
         if(this.listArtists.length == 0){
             let url = this.$store.getters.getApiURL + "artists";  //url to te request datas
             await axios.get(url).catch(function (error){ //getting datas and handling errors
-                this.error = true;
-                this.errMessage = error.message;
+                Notiflix.Notify.failure(error.message)
             }).then(response => (response.data.sort(function(a,b){ //sort the returned list by name of artist
                 if(a.name.toLowerCase() < b.name.toLowerCase()){return -1}
                 if(a.name.toLowerCase() > b.name.toLowerCase()){return 1}
                 return 0;
             }))).then(response => this.listArtists = response); //associate sorted data to listArtists
         }
-      },
-      //reset the parameters for the next alert to show
-      resetAlert(){
-          this.alertIndex = 0;
-          this.message ="";
       },
       //redirect to artist details page
       showDetails(id){

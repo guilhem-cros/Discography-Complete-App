@@ -44,12 +44,6 @@ const routes = [
     props : true
   },
   {
-    path:'/sever-error',
-    name: 'error',
-    component: () => import('../views/RequestError.vue'),
-    props : true
-  },
-  {
     path: '/connect',
     name : 'connect',
     component: () => import('../views/SignFormView.vue'),

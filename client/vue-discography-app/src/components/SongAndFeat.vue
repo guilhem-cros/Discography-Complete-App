@@ -17,6 +17,8 @@
 <script>
 import axios from "axios";
 import SongForm from '../components/SongForm.vue';
+import Notiflix from 'notiflix';
+
 
 
 export default {
@@ -41,7 +43,7 @@ export default {
         async getFeats(){
             let url = this.$store.getters.getApiURL + "songs/feats/" + this.idSong;
             await axios.get(url).catch(function (error){ //get data and handling error
-                this.$emit('loadingError', error.message);
+                Notiflix.Notify.failure(error.message, {closeButton : true});
             }).then(response => this.feats = response.data); //put data in this.feats
         },
         //redirect to the artist details page of the artist with id_artist ) index
@@ -58,7 +60,7 @@ export default {
         async delete(){
           let url = this.$store.getters.getApiURL + "songs/" + this.idSong;
           await axios.delete(url).catch(function (error){ //deleting the song in db or handling error
-            this.$emit("loadingError", error.message);
+            Notiflix.Notify.failure(error.message, {closeButton : true});
           }).then(this.$emit('deleted', this.index)); //delete the song in the details view's song list
         },
         //display the create/update form

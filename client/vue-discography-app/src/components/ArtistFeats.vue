@@ -18,6 +18,7 @@
 
 <script>
 import axios from 'axios'
+import Notiflix from 'notiflix';
 
 export default {
     name :'ArtistFeats',
@@ -35,7 +36,7 @@ export default {
         async getData(){
             let url = this.url + "artists/albums/whereArtist/" + this.idArtist;
             await axios.get(url).catch(function (error) { //get data or handling error
-                this.$route.push({name: error, params : {mess: error.message}})
+                Notiflix.Notify.failure(error.message, {closeButton:true});
             }).then(response => ( response.data.sort(function(a,b){ //sort data by release data of the song (*song's album release)
               if(a.release < b.release){return 1}
               if(a.release > b.release){return -1}

@@ -47,7 +47,7 @@ import axios from 'axios';
 import SongAndFeat from '../components/SongAndFeat.vue';
 import SongForm from '../components/SongForm.vue';
 import CommentForm from '@/components/CommentForm.vue';
-
+import Notiflix from 'notiflix';
 
 export default {
     name: 'AlbumDetailsView',
@@ -74,16 +74,14 @@ export default {
         async getAlbumDetails(){
             let url = this.$store.getters.getApiURL + "albums/" + this.idAlbum;
             await axios.get(url).catch(function (error){ //get data or handling error
-                this.error = true;
-                this.errMessage = error.message;
+                Notiflix.Notify.failure(error.message)
             }).then(response => this.albumData = response.data) //put data in this.albumData
         },
         //get all song in the album
         async getSongsOfAlbum(){
             let url = this.$store.getters.getApiURL + "songs/onAlbum/" + this.idAlbum;
             await axios.get(url).catch(function (error){ //get data or handling error
-                this.error = true;
-                this.errMessage = error.message;
+                Notiflix.Notify.failure(error.message)
             }).then(response => ( response.data.sort(function(a,b){ //sort songs by id
               if(a.id_song < b.id_song){return -1}
               if(a.id_song > b.id_song){return 1}
@@ -94,16 +92,14 @@ export default {
         async getMainArtist(){
             let url = this.$store.getters.getApiURL + "artists/" + this.albumData.artist;
             await axios.get(url).catch(function(error){ //get data or handling error
-                this.error = true;
-                this.errMessage = error.message;
+                Notiflix.Notify.failure(error.message)
             }).then(response=> (this.artist = response.data));//put data in this artist
         },
         //get last comments of this album
         async getLastComs(){
             let url = this.$store.getters.getApiURL + "comments/last/" + this.idAlbum;
             await axios.get(url).catch(function(error){ //get data or handling error
-                this.error = true;
-                this.errMessage = error.message;
+                Notiflix.Notify.failure(error.message)
             }).then(response=> (this.lastComments = response.data)); //put data in this.lastComments
         },
         //load and get all data needed to the view
@@ -160,6 +156,7 @@ export default {
       },
       //remove song of index : index in album's songs list
       updateList(index){
+        Notiflix.Notify.success("Song deleted", {closeButton : true});
         this.albumSongs.splice(index, 1)
       }
     },

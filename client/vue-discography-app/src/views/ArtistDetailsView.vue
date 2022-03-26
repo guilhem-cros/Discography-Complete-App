@@ -27,29 +27,25 @@
     </div>
   </div>
   <ArtistForm :artist="artistDatas" :create="false" v-else @goBack="showDetails" @update="reloadDetails" @updated="showSuccess" @error="showError"/>
-  <AlertBox :alertIndex="alertIndex" :message="message" @alertClosed="resetAlert"/>
 </template>
 
 <script>
 import axios from 'axios'
 import ArtistForm from '../components/ArtistForm.vue';
-import AlertBox from '../components/AlertBox.vue';
 import ArtistFeats from '../components/ArtistFeats.vue'
 import ArtistAlbums from '@/components/ArtistAlbums.vue';
+import Notiflix from 'notiflix';
 
 
 export default {
     name : 'ArtistDetails',
-    components: { ArtistForm, AlertBox, ArtistFeats, ArtistAlbums },
+    components: { ArtistForm, ArtistFeats, ArtistAlbums },
     data(){
         return{
             artistDatas : {},
-            message : "", //message for the alerts notifications
-            alertIndex : 0,
             genre : {},
             imgSrc : this.$store.getters.getApiURL,
             updating : false,
-            errMessage : "",
             listAlbum : [{}]
         }
     },
@@ -58,14 +54,14 @@ export default {
         async getDatas(){
             let url = this.$store.getters.getApiURL + "artists/"+this.id;
             await axios.get(url).catch(function (error){ //getting the albums and handling errors
-                this.$route.push({name: error, params : {mess: error.message}})
+                Notiflix.Notify.failure(error.message)
             }).then(response => (this.artistDatas = response.data)); //put date in this.artistDatas
         },
         //get the genre infos of the artist
         async getGenre(){
             let url = this.$store.getters.getApiURL + "genres/" + this.artistDatas.genre;
             await axios.get(url).catch(function (error){ //getting genre infos and handling errors
-                console.log(error.message)
+                Notiflix.Notify.failure(error.message)
             }).then(response => this.genre = response.data)//put data in this.genre
         },
         //load/get all needed data
@@ -93,25 +89,18 @@ export default {
         },
         //show success notification
         showSuccess(values){
-        this.message = "The artist " + values.name + " has been " + values.message + "."
-        this.alertIndex = 1;
+        let message = "The artist " + values.name + " has been " + values.message + "."
+        Notiflix.Notify.success(message, {closeButton : true})
         },
         //display an alert "error" showing 'message'
         showError(message){
-          this.message = message;
-          this.alertIndex = 4;
+          Notiflix.Notify.failure(message, {closeButton : true})
         },
         //change bg color of page and hide artis form
         showDetails(){
           document.querySelector('body').setAttribute('style', 'background:white')
           this.updating=false;
         },
-         //reset the parameters for the next alert to show
-        resetAlert(){
-          this.alertIndex = 0;
-          this.message ="";
-        },
-        //confirmation for removing an artist
         deleteConfirm(){
           if (window.confirm('Delete the artist ' + this.artistDatas.name + ' ?')){
               this.delete()

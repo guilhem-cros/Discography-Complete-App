@@ -47,7 +47,9 @@ export default{
     methods : {
         async signIn(){
             await signInWithEmailAndPassword(auth, this.username, this.password
-            ).catch(this.connectError=true);
+            ).catch(function (){
+              this.connectError = true;
+            });
             this.$router.replace({name : 'home'});
         },
         async signUp(){
@@ -57,7 +59,8 @@ export default{
             }
             else{
                 await createUserWithEmailAndPassword(auth, this.username, this.password
-                ).catch((this.createError = true, this.message = "Enter a valid e-email / If it is valid -> account already registered"));
+                ).catch(function (){
+                  (this.createError = true, this.message = "Enter a valid e-email / If it is valid -> account already registered")})
                 this.$router.replace({name : 'home'});
             }
         },

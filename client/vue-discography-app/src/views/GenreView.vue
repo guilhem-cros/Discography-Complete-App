@@ -16,26 +16,21 @@
   </div>
   <GenreForm :genre="{}" :creation="true" v-if="this.displayIndex==1" @goBack="showList" @updated="showSuccess" @error="showError"/>
   <GenreForm :genre="currentGenre" :creation="false" v-if="this.displayIndex==2"  @goBack="showList" @updated="showSuccess" @error="showError"/>
-  <AlertBox :alertIndex="alertIndex" :message="message" @alertClosed="resetAlert"/>
 </template>
 
 <script>
 import GenreForm from '../components/GenreForm.vue';
-import AlertBox from '../components/AlertBox.vue';
 import axios from 'axios';
+import Notiflix from 'notiflix';
 
 export default {
   name: 'GenreView',
-  components: { GenreForm, AlertBox },
+  components: { GenreForm },
   data(){
       return{
         listGenres : [], //list of all the genres
         displayIndex : 0, //index of what is currently displayed in the view
         currentGenre : {id : -1, name : "", desc : ""}, //pointing a genre when one of his buttons (update / delete) has been clicked
-        message : "", //message for the alerts notifications
-        alertIndex : 0, //index of the alert notification : 0 = hide alerts
-        error : false, //boolean : true if an error happens when loading datas, false if no error
-        errMessage : "" //message send during the error
       }
   },
   methods:{
@@ -44,8 +39,7 @@ export default {
         if(this.listGenres.length == 0){
             let url = this.$store.getters.getApiURL + "genres";  //url to te request datas
             await axios.get(url).catch(function (error){ //getting datas and handling errors
-                this.error = true;
-                this.errMessage = error.message;
+                Notiflix.Notify.failure(error.message, {closeButton: true});
             }).then(response => (response.data.sort(function(a,b){ //sort the returned list by name of genre
                 if(a.genre.toLowerCase() < b.genre.toLowerCase()){return -1}
                 if(a.genre.toLowerCase() > b.genre.toLowerCase()){return 1}
@@ -78,30 +72,23 @@ export default {
       async delete(name, idGenre, tabIndex){
           let url = this.$store.getters.getApiURL + "genres/" + idGenre;
           await axios.delete(url).catch(function (error) { //delete the genre in the DB
-            let message = error.message;
-            this.showError(message);
+            Notiflix.Notify.failure(error.message, {closeButton : true});
           }).then(
           this.listGenres.splice(tabIndex, 1)).then( //delete the genre in listGenre -> avoid to fetch again the datas we alrdy have
           this.showSuccess({message : "deleted", name : name}));
       },
       //display an alert "success" with message using 'values'
       showSuccess(values){
-        this.message = "The genre " + values.name + " has been " + values.message + "."
-        this.alertIndex = 1;
+        let message = "The genre " + values.name + " has been " + values.message + "."
+        Notiflix.Notify.success(message, {closeButton : true});
       },
       //display an alert "error" showing 'message'
       showError(message){
-          this.message = message;
-          this.alertIndex = 4;
+          Notiflix.Notify.failure(message, {closeButton : true});
       },
       showList(){
           this.displayIndex=0;
       },
-      //reset the parameters for the next alert to show
-      resetAlert(){
-          this.alertIndex = 0;
-          this.message ="";
-      }
   },
   beforeCreate () { //set bg color when creating
     document.querySelector('body').setAttribute('style', 'background:#111110')

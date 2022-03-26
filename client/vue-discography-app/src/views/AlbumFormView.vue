@@ -29,14 +29,12 @@
     <div v-else>
       <h2 id="nonAdmin">Error : you don't have the permission to access this page.</h2>
     </div>
-    <AlertBox :alertIndex="alertIndex" :message="message" @alertClosed="resetAlert"/>
 </template>
 
 <script>
 import axios from 'axios';
-import AlertBox from '../components/AlertBox.vue';
 import vSelect from "vue-select";
-
+import Notiflix from 'notiflix';
 
 
 export default{
@@ -47,15 +45,11 @@ export default{
             album : {title : "", release : null, artist : null, cover : ""}, //the updating album of empty if create
             listArtists : [],//all artists list
             title : "", //title of the album
-            updates : false, 
+            updates : false,
             picture : this.create, //true if there is a picture to show, false if not
             name : this.artistName, //name of the album's artist
             idArtist : null, //id of the album artist
             currImg : "", //current image displayed
-            alertIndex : 0, //index of thez alert
-            message : "", //message of the alert (notif)
-            errMessage : "", //error page's message
-            error : false, //true if showing error page, false if not
             albumCover : null, //path to the album cover
             date : "", //date of release of the album
         }
@@ -64,14 +58,13 @@ export default{
         idAlbum : String, //id of the album -> -1 id creating
         artistName : String, //name of the album's artist -> empty if creating
     },
-    components: {AlertBox, vSelect},
+    components: {vSelect},
     methods : {
       //get all artists
         async getArtists(){
             let url = this.$store.getters.getApiURL + "artists";
             await axios.get(url).catch(function (error){ //get artists or handle erroe
-                this.error=true;
-                this.errMessage = error.message;
+                Notiflix.Notify.failure(error.message)
             }).then(response => response.data.sort(function(a,b){ //sort artists by name
                 if(a.name.toLowerCase() < b.name.toLowerCase()){return -1}
                 if(a.name.toLowerCase() > b.name.toLowerCase()){return 1}
@@ -82,8 +75,7 @@ export default{
         async getAlbum(){
             let url = this.$store.getters.getApiURL + "albums/" + this.idAlbum;
             await axios.get(url).catch(function (error){ //get data or handle error
-                this.error=true;
-                this.errMessage = error.message;
+                Notiflix.Notify.failure(error.message)
             }).then(response => this.album = response.data); //put data in this .album
         },
         //prepare album to be displayed in form
@@ -97,11 +89,6 @@ export default{
             }
             this.setCurrImg(); //set img to display
 
-        },
-        //reset the parameters for the next alert to show
-        resetAlert(){
-            this.alertIndex = 0;
-            this.message ="";
         },
         //set this.currImg to the path to album img if it exists, if not  -> default image's path
         setCurrImg(){
@@ -132,17 +119,15 @@ export default{
                 if(this.title.length >=1){
                     let url = this.$store.getters.getApiURL + "albums";
                     if(this.create){ //if create
-                        await axios.post(url, datas).catch(function (){ //post data and handling errors
-                            this.message = "An error occurred, please try again";
-                            this.alertIndex = 4; //emit error to display alert
+                        await axios.post(url, datas).catch(function (error){ //post data and handling errors
+                            Notiflix.Notify.failure(error.message)
                         }).then( response =>
                             this.$router.push({name : 'albumDetails', params: {idAlbum : response.data.id_album}}) //redirect to this new albums details page
                         );
                     }
                     else{
-                        await axios.put(url + '/' +  this.idAlbum, datas).catch(function (){ //put data or handling error
-                            this.message = "An error occurred, please try again";
-                            this.alertIndex = 4;
+                        await axios.put(url + '/' +  this.idAlbum, datas).catch(function (error){ //put data or handling error
+                            Notiflix.Notify.failure(error.message)
                         }).then(
                             this.$router.push({name : 'albumDetails', params : {idAlbum : this.idAlbum}}) //redirect to this album details page
                         );

@@ -28,14 +28,13 @@
     <div v-else>
       <p>Error : you don't have the permission for this action</p>
     </div>
-    <AlertBox :alertIndex="alertIndex" :message="message" @alertClosed="resetAlert"/>
 
 </template>
 
 <script>
 import vSelect from "vue-select";
-import AlertBox from '../components/AlertBox.vue';
 import axios from 'axios';
+import Notiflix from "notiflix";
 
 export default {
     name: 'SongForm',
@@ -47,12 +46,10 @@ export default {
             listArtists : [], //list of all the artists
             takeFeats : !this.create, //pre-open feats form if true, hide it if false
             printFeat : "Feats : ", //string of featurings
-            alertIndex : 0, //index of an alert send
-            message : '', //message of alerts
             song : {} //data of the song : empty if it's a create
         }
     },
-    components: {vSelect, AlertBox},
+    components: {vSelect},
     props : {
         idAlbum : String, //id of the songs album
         idSong : Number, //id of the song
@@ -67,7 +64,7 @@ export default {
         async getArtists(){
             let url = this.$store.getters.getApiURL + "artists";
             await axios.get(url).catch(function (error){ //get data or handling errors
-                this.$emit('errorLoading', error.message);
+                Notiflix.Notify.failure(error.message)
             }).then(response => response.data.sort(function(a,b){ //sort data by artist.name
                 if(a.name.toLowerCase() < b.name.toLowerCase()){return -1}
                 if(a.name.toLowerCase() > b.name.toLowerCase()){return 1}
@@ -82,16 +79,14 @@ export default {
                 if(this.create){ //if creation
                     let url = this.$store.getters.getApiURL + "songs";
                     await axios.post(url, datas).catch(function (error){//post data or hanfdling error
-                        this.alertIndex = 4;
-                        this.message = error.message
-                    }).then(this.alertIndex = 1, this.message = "Song has been added");//show success notif
+                        Notiflix.Notify.failure(error.message)
+                    }).then(Notiflix.Notify.success("Song created"));//show success notif
                 }
                 else{ //if update
                     let url = this.$store.getters.getApiURL + "songs/" + this.idSong;
                     await axios.put(url, datas).catch(function (error){ //post data or handling error
-                        this.alertIndex = 4;
-                        this.message = error.message;
-                    }).then(this.alertIndex = 1, this.message = 'Song has been updated');//showSuccesNotif
+                        Notiflix.Notify.failure(error.message)
+                    }).then(Notiflix.Notify.success("Song updated"));//showSuccesNotif
                 }
                 location.reload() //reload page to reload the album tracklisk
             }
@@ -156,11 +151,6 @@ export default {
                 return []
             }
             return featArray;
-        },
-        //reset the parameters for the next alert to show
-        resetAlert(){
-            this.alertIndex = 0;
-            this.message ="";
         },
         //remove the song's artist of this.listArtists
         removeArtistFromList(){
