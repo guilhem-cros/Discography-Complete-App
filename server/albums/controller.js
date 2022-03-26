@@ -19,7 +19,7 @@ async function createAlbum(req, res){
             res.status(201).json(newAlbum.rows[0]);
         }
     } catch (err){
-        res.status(501).send({message : err.message});
+        res.status(500).send({message : err.message});
     }
 }
 

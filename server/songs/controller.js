@@ -8,14 +8,14 @@ async function createSong(req, res){
         const newSong = await pool.query(queries.createSong,
         [song.title, song.album]
         );
-        for(artist of song.feats){
+        for(let artist of song.feats){
             const newFeat = await pool.query(queries.addFeaturing,
             [newSong.rows[0].id_song, artist]
             );
         }
         res.status(201).send("Song and feats created");
     } catch (err){
-        res.status(501).send({message : err.message});
+        res.status(500).send({message : err.message});
     }
 }
 
@@ -64,7 +64,7 @@ async function updateSong(req, res){
         [song.title, song.album, idSong]
         );
         await pool.query(queries.removeFeaturing, [idSong]);
-        for(artist of song.feats){
+        for(let artist of song.feats){
             const newFeat = await pool.query(queries.addFeaturing,
             [idSong, artist]
             );

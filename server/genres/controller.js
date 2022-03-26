@@ -10,7 +10,7 @@ async function createGenre(req, res){
         );
         res.status(201).send("Genre has been created");
     } catch (err){
-        res.status(501).send({message : err.message});
+        res.status(500).send({message : err.message});
     }
 }
 

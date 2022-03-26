@@ -18,7 +18,7 @@ async function createArtist(req, res){
         }
         res.status(201).send("Artist has been created");
     } catch (err){
-        res.status(501).send({message : err.message});
+        res.status(500).send({message : err.message});
     }
 }
 
