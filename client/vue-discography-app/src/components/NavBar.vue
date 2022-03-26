@@ -3,8 +3,8 @@
     <router-link :to="{name : 'home'}">Home</router-link>  |
     <router-link :to="{name : 'artists'}">Artists</router-link> |
     <router-link :to="{name: 'genres'}">Genres</router-link> |
-    <router-link :to="{name : 'album', params:{idAlbum : -1, artistName: ''}}">Add an Album</router-link> |
-    <router-link :to="{name : 'about'}">About</router-link>
+    <router-link :to="{name : 'about'}">About</router-link> |
+    <router-link :to="{name : 'album', params:{idAlbum : -1, artistName: ''}}" v-if="this.$store.getters.adminState">Add an Album</router-link>
   </nav>
 </template>
 

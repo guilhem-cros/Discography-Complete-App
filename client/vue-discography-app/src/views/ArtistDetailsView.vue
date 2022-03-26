@@ -1,9 +1,12 @@
 <template>
   <div class="artistDetails" v-if="!updating">
     <div class="banner" :style="'background-image: url(' + this.getImg() + ')'"></div>
-    <div class="modifLogos">
+    <div class="modifLogos" v-if="this.$store.getters.adminState">
       <img src="../assets/updateLogo.png" alt="updateLogo" id="updateLogo" title = "Update" @click="openForm">
       <img src="../assets/deleteLogo.png" alt="deleteLogo" id="deleteLogo" title="Delete" @click="deleteConfirm">
+    </div>
+    <div v-else class="modifLogos">
+      <h1></h1><h1></h1>
     </div>
     <div class="artistContent">
       <div class="contentPicture">

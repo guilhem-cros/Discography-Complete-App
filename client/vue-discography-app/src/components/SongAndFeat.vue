@@ -4,7 +4,7 @@
       <div class="song">
         <p v-for="(feat, index) in this.feats" :key="index" @click="showArtist(index)">{{(index==0? "(Ft. " : ", ") + feat.name + (index==this.feats.length-1 ? ")" : "") }} </p>
       </div>
-      <div class="updateImg">
+      <div class="updateImg" v-if="this.$store.getters.adminState">
         <img src="../assets/updateLogo.png" alt="update_logo" title="Update" class="updLogo" id="updtLogo" @click="openForm">
         <img src="../assets/deleteLogo.png" alt="delete_logo" title="Delete song" class="updLogo" id="delLogo" @click="confirmDelete">
       </div>

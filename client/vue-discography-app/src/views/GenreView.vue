@@ -2,14 +2,14 @@
   <div class="genreList" v-if="this.displayIndex==0">
       <div class="titleDiv">
         <h2 id="genreTitle">All genres of music : </h2>
-        <div class="addButt" @click="create">Add new</div>
+        <div class="addButt" @click="create" v-if="this.$store.getters.adminState">Add new</div>
       </div>
       <div class="list">
         <div v-for="(genre, index) in this.listGenres" :key="genre.id_genre" class="genre"> 
             <img src="../assets/genreLogo.jpg" class="genreLogo" alt="genre_logo">
             <p class="genreName">{{"Name : " + genre.genre}}</p>
-            <div class="updateButt genreButton" @click="callUpdate(genre.id_genre, genre.genre, genre.description)">Update</div>
-            <div class="deleteButt genreButton" @click="deleteConfirm(genre.genre, genre.id_genre, index)">Delete</div>
+            <div class="updateButt genreButton" @click="callUpdate(genre.id_genre, genre.genre, genre.description)" v-if="this.$store.getters.adminState">Update</div>
+            <div class="deleteButt genreButton" @click="deleteConfirm(genre.genre, genre.id_genre, index)" v-if="this.$store.getters.adminState">Delete</div>
             <p class="genreDesc">{{"Description : "  + (genre.description==null ? " " : genre.description)}}</p>
         </div>
       </div>

@@ -2,7 +2,7 @@
   <div class="artistList" v-if="this.displayList">
   <div class="titleDiv">
     <h2 id="artistTitle">All the artists : </h2>
-    <div class="addB" @click="openForm">Add new</div>
+    <div class="addB" @click="openForm" v-if="this.$store.getters.adminState">Add new</div>
   </div>
   <div class="listArtists">
     <div v-for="(artist, index) in this.listArtists" :key="artist.id_artist" class="artist" :class="'col_' + index%6" @click="showDetails(index)">

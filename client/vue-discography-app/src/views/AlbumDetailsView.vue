@@ -2,8 +2,8 @@
   <div class="albumDetails">
   <div class="albumBanner" :style="'background-image: url(' + this.getCover() + ')'">
     <div class="modifLogos">
-        <img src="../assets/updateLogo.png" alt="updateLogo" id="updateLogo" title = "Update" @click="openForm">
-        <img src="../assets/deleteLogo.png" alt="deleteLogo" id="deleteLogo" title="Delete" @click="deleteConfirm">
+        <img src="../assets/updateLogo.png" alt="updateLogo" id="updateLogo" title = "Update" @click="openForm" v-if="this.$store.getters.adminState">
+        <img src="../assets/deleteLogo.png" alt="deleteLogo" id="deleteLogo" title="Delete" @click="deleteConfirm" v-if="this.$store.getters.adminState">
     </div>
     <div class="bannerContent">
         <div class="cover">
@@ -23,9 +23,11 @@
         <div v-for="(song, index) in this.albumSongs" :key="song.id_song" class="track">
             <SongAndFeat :idAlbum="idAlbum" :index="index" :idSong="song.id_song" :songName="song.song_title" :idArtist="this.artist.id_artist" @loadingError="showError" @deleted="updateList"/>
         </div>
-        <p class="addSongBtn" v-if="!isAddingSong" @click="openSongForm">Add a song</p>
-        <div class="addSong" v-else>
-          <SongForm :idAlbum="this.idAlbum" :create="true" :idSong="-1" :name="''" :featurings="[]" :idArtist="this.artist.id_artist" @errorLoading="showError" @formClosed="hideForm"/>
+        <div v-if="this.$store.getters.adminState">
+          <p class="addSongBtn" v-if="!isAddingSong" @click="openSongForm">Add a song</p>
+          <div class="addSong" v-else>
+            <SongForm :idAlbum="this.idAlbum" :create="true" :idSong="-1" :name="''" :featurings="[]" :idArtist="this.artist.id_artist" @errorLoading="showError" @formClosed="hideForm"/>
+          </div>
         </div>
     </div>
     <h3 id="commentsTitle">LAST COMMENTS FROM LISTENERS</h3>

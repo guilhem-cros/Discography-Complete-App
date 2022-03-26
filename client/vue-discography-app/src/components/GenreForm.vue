@@ -1,5 +1,5 @@
 <template>
-    <div class="form">
+    <div class="form" v-if="this.$store.getters.adminState">
         <h2>{{ this.title }}</h2>
         <p id="reqInfo">* required</p>
         <form class="genreForm" @submit.prevent="submitDatas">
@@ -13,6 +13,9 @@
       <div class="backButt" @click="goBack">
         <p id="backText">Back</p>
       </div>
+    </div>
+    <div v-else>
+      <h2 id="nonAdmin">Error : you don't have the permission to access this page.</h2>
     </div>
 </template>
 
@@ -180,6 +183,10 @@ export default {
   color : gold;
 }
 
+#nonAdmin {
+  color : white;
+  margin-top : 5%;
+}
 
 #genreName::placeholder, #genreDesc::placeholder{
   color: grey;

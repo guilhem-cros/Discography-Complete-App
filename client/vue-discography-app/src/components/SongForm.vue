@@ -1,5 +1,5 @@
 <template>
-    <div class="songForm">
+    <div class="songForm" v-if="this.$store.getters.adminState">
       <form>
       <p id="formSongTitle">New song :</p>
       <div class="newSong">
@@ -24,6 +24,9 @@
         <div class="cancelBtn" @click="closeForm">Cancel</div>
       </div>
     </form>
+    </div>
+    <div v-else>
+      <p>Error : you don't have the permission for this action</p>
     </div>
     <AlertBox :alertIndex="alertIndex" :message="message" @alertClosed="resetAlert"/>
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="form">
+    <div class="form" v-if="this.$store.getters.adminState">
         <h2>{{ this.pageTitle }}</h2>
         <p id="reqInfo">* required</p>
         <form class="albumForm" @submit.prevent="submitDatas">
@@ -25,6 +25,9 @@
       <div class="backB" @click="goBack">
         <p id="backText">Back</p>
       </div>
+    </div>
+    <div v-else>
+      <h2 id="nonAdmin">Error : you don't have the permission to access this page.</h2>
     </div>
     <AlertBox :alertIndex="alertIndex" :message="message" @alertClosed="resetAlert"/>
 </template>
@@ -331,6 +334,11 @@ export default{
   color: grey;
   font-size : 12px;
   font-weight: bold;
+}
+
+#nonAdmin {
+  color : white;
+  margin-top : 5%;
 }
 
 @media screen and (max-width: 1050px){

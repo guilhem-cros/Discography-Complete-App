@@ -1,5 +1,5 @@
 <template>
-  <div class="connectPage">
+  <div class="connectPage" v-if="!this.$store.getters.user.loggedIn">
     <form class="signForm" @submit.prevent="sign">
         <h2 id="connectTitle">{{this.formTitle}}</h2>
         <div id="fields">
@@ -17,6 +17,7 @@
     </form>
     <p id="redirText" @click="redirect">{{this.redirectText}}</p>
   </div>
+  <h2 v-else id="loggedIn">You are already logged !</h2>
 </template>
 
 <script>
@@ -47,7 +48,7 @@ export default{
         async signIn(){
             await signInWithEmailAndPassword(auth, this.username, this.password
             ).catch(this.connectError=true);
-            this.$router.push({name : 'home'});
+            this.$router.replace({name : 'home'});
         },
         async signUp(){
             if(this.password != this.password2 || this.password.length < 6){
@@ -57,7 +58,7 @@ export default{
             else{
                 await createUserWithEmailAndPassword(auth, this.username, this.password
                 ).catch((this.createError = true, this.message = "Enter a valid e-email / If it is valid -> account already registered"));
-                this.$router.push({name : 'home'});
+                this.$router.replace({name : 'home'});
             }
         },
         sign(){
@@ -195,6 +196,9 @@ export default{
 }
 #redirText:hover{
   cursor : pointer;
+}
+#loggedIn{
+  margin-top : 5%;
 }
 
 @media screen and (max-width: 900px)  {
