@@ -80,13 +80,15 @@ export default {
                     let url = this.$store.getters.getApiURL + "songs";
                     await axios.post(url, datas).catch(function (error){//post data or hanfdling error
                         Notiflix.Notify.failure(error.message)
-                    }).then(Notiflix.Notify.success("Song created"));//show success notif
+                    })
+                    Notiflix.Notify.success("Song created");//show success notif
                 }
                 else{ //if update
                     let url = this.$store.getters.getApiURL + "songs/" + this.idSong;
                     await axios.put(url, datas).catch(function (error){ //post data or handling error
                         Notiflix.Notify.failure(error.message)
-                    }).then(Notiflix.Notify.success("Song updated"));//showSuccesNotif
+                    })
+                    Notiflix.Notify.success("Song updated");//showSuccesNotif
                 }
                 location.reload() //reload page to reload the album tracklisk
             }

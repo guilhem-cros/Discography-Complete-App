@@ -88,18 +88,17 @@ export default {
                     await axios.post(url, datas).catch(function (error){//create or handling error
                         let message = error.message;
                         this.$emit("error", message);//emit error to display an alert
-                    }).then(
-                        this.$emit("updated", {name : this.name, message : "created"})
-                    );
+                    })
+                    this.$emit("updated", {name : this.name, message : "created"})
+
                 }
                 else{//updating form
                     await axios.put(url + '/' +  this.artist.id_artist, datas).catch(function (error){//update or handling error
                         let message = error.message;
                         this.$emit("error", message);//emit error to display an alert
-                    }).then(
-                        this.$emit("updated", {name : this.name, message : "updated"}),
-                        this.$emit("update")
-                    );
+                    });
+                    this.$emit("updated", {name : this.name, message : "updated"}),
+                    this.$emit("update");
                 }
                 //update has been made -> true
                 this.updates = true;
@@ -117,7 +116,7 @@ export default {
                 return require("../assets/artists/default.png");
             }
             else{
-                return this.$store.getters.getApiURL +  this.artist.image;
+                return this.artist.image;
             }
         },
         //change the preview of the image of the artist

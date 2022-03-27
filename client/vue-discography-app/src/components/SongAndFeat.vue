@@ -1,6 +1,6 @@
 <template>
     <div class="tracks">
-      <p id="titleSong">{{this.songName.toUpperCase()}}</p>
+      <p id="titleSong">{{this.songName}}</p>
       <div class="song">
         <p v-for="(feat, index) in this.feats" :key="index" @click="showArtist(index)">{{(index==0? "(Ft. " : ", ") + feat.name + (index==this.feats.length-1 ? ")" : "") }} </p>
       </div>
@@ -42,9 +42,10 @@ export default {
       //get the feats on a pointed song
         async getFeats(){
             let url = this.$store.getters.getApiURL + "songs/feats/" + this.idSong;
-            await axios.get(url).catch(function (error){ //get data and handling error
+            const response = await axios.get(url).catch(function (error){ //get data and handling error
                 Notiflix.Notify.failure(error.message, {closeButton : true});
-            }).then(response => this.feats = response.data); //put data in this.feats
+            })
+            this.feats = response.data; //put data in this.feats
         },
         //redirect to the artist details page of the artist with id_artist ) index
         showArtist(index){
@@ -61,7 +62,8 @@ export default {
           let url = this.$store.getters.getApiURL + "songs/" + this.idSong;
           await axios.delete(url).catch(function (error){ //deleting the song in db or handling error
             Notiflix.Notify.failure(error.message, {closeButton : true});
-          }).then(this.$emit('deleted', this.index)); //delete the song in the details view's song list
+          });
+          this.$emit('deleted', this.index); //delete the song in the details view's song list
         },
         //display the create/update form
         openForm(){

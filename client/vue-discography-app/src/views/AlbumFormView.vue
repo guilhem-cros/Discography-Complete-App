@@ -74,9 +74,10 @@ export default{
         //get album data
         async getAlbum(){
             let url = this.$store.getters.getApiURL + "albums/" + this.idAlbum;
-            await axios.get(url).catch(function (error){ //get data or handle error
+            const response = await axios.get(url).catch(function (error){ //get data or handle error
                 Notiflix.Notify.failure(error.message)
-            }).then(response => this.album = response.data); //put data in this .album
+            })
+            this.album = response.data; //put data in this .album
         },
         //prepare album to be displayed in form
         async getCurrAlbum(){
@@ -96,7 +97,7 @@ export default{
                 this.currImg = require("../assets/covers/default.jpg");
             }
             else{
-                this.currImg=  this.$store.getters.getApiURL +  this.album.cover;
+                this.currImg= this.album.cover;
             }
         },
         //show the preview of an image uploaded in input by user
@@ -119,18 +120,17 @@ export default{
                 if(this.title.length >=1){
                     let url = this.$store.getters.getApiURL + "albums";
                     if(this.create){ //if create
-                        await axios.post(url, datas).catch(function (error){ //post data and handling errors
+                        const art = await axios.post(url, datas).catch(function (error){ //post data and handling errors
                             Notiflix.Notify.failure(error.message)
-                        }).then( response =>
-                            this.$router.push({name : 'albumDetails', params: {idAlbum : response.data.id_album}}) //redirect to this new albums details page
-                        );
+                        })
+                        this.$router.push({name : 'albumDetails', params: {idAlbum : art.data.id_album}}) //redirect to this new albums details page
                     }
                     else{
                         await axios.put(url + '/' +  this.idAlbum, datas).catch(function (error){ //put data or handling error
                             Notiflix.Notify.failure(error.message)
-                        }).then(
-                            this.$router.push({name : 'albumDetails', params : {idAlbum : this.idAlbum}}) //redirect to this album details page
-                        );
+                        })
+                        this.$router.push({name : 'albumDetails', params : {idAlbum : this.idAlbum}}) //redirect to this album details page
+
                     }
                     this.picture = this.create //reinit this.picture
                 }

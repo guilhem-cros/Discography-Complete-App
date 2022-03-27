@@ -44,7 +44,6 @@ export default {
         return{
             artistDatas : {},
             genre : {},
-            imgSrc : this.$store.getters.getApiURL,
             updating : false,
             listAlbum : [{}]
         }
@@ -53,16 +52,18 @@ export default {
         //get artist data
         async getDatas(){
             let url = this.$store.getters.getApiURL + "artists/"+this.id;
-            await axios.get(url).catch(function (error){ //getting the albums and handling errors
+            const response = await axios.get(url).catch(function (error){ //getting the albums and handling errors
                 Notiflix.Notify.failure(error.message)
-            }).then(response => (this.artistDatas = response.data)); //put date in this.artistDatas
+            })
+            this.artistDatas = response.data; //put date in this.artistDatas
         },
         //get the genre infos of the artist
         async getGenre(){
             let url = this.$store.getters.getApiURL + "genres/" + this.artistDatas.genre;
-            await axios.get(url).catch(function (error){ //getting genre infos and handling errors
+            const response = await axios.get(url).catch(function (error){ //getting genre infos and handling errors
                 Notiflix.Notify.failure(error.message)
-            }).then(response => this.genre = response.data)//put data in this.genre
+            })
+            this.genre = response.data//put data in this.genre
         },
         //load/get all needed data
         async loadAll(){
@@ -76,7 +77,7 @@ export default {
             return require("../assets/artists/default.png"); //return default picture path
           }
           else{
-            return this.imgSrc +  this.artistDatas.image; //return complete artist picture path
+            return this.artistDatas.image; //return complete artist picture path
           }
         },
         //display artist form
@@ -112,9 +113,8 @@ export default {
           await axios.delete(url).catch(function (error) { //delete the genre in the DB
             let message = error.message;
             this.showError(message)
-          }).then(
-          this.$emit('success', this.artistDatas.name), //success notification
-          this.$router.push({ name: 'artists' })); //redirect to artist list page
+          })
+          this.$router.replace({ name: 'artists' }); //redirect to artist list page
       },
     },
     props :{
@@ -166,6 +166,7 @@ export default {
   background-color: white;
   object-fit: cover;
   height: 250px;
+  filter : blur(0);
 }
 
 .artistMenu{
@@ -181,7 +182,6 @@ export default {
   width: 100%;
   height: 30%;
   opacity: .8;
-  z-index: -1;
 }
 
 #deleteLogo, #updateLogo{
@@ -197,7 +197,8 @@ export default {
 .modifLogos{
   display: grid;
   justify-content: end;
-  margin-right : 1%
+  margin-right : 1%;
+  filter : blur(0);
 }
 
 #updateLogo{

@@ -56,7 +56,7 @@ export default ({
           return require("../assets/artists/default.png");
         }
         else{
-          return this.imgSrc +  a.image;
+          return a.image;
         }
       },
       //show artist form and hide list
@@ -75,13 +75,12 @@ export default ({
       },
       //display success alert
       showSuccess(values){
-        this.message = "The artist " + values.name + " has been " + values.message + "."
-        this.alertIndex = 1;
+        let message = "The artist " + values.name + " has been " + values.message + "."
+        Notiflix.Notify.success(message, {closeButton : true})
       },
       //display an alert "error" showing 'message'
       showError(message){
-          this.message = message;
-          this.alertIndex = 4;
+          Notiflix.Notify.failure(message, {closeButton : true})
       },
     },
     mounted(){ //get all artists when mounted

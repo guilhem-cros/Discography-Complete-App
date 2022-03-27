@@ -1,5 +1,5 @@
 <template>
-  <div class="head">
+  <div class="head" @keyup.esc="this.isSearching=false">
     <div class="search">
       <input type="text" id="searchBar" placeholder="Search for albums & more" autocomplete="off" v-model="searchedText" @input="loadResearch">
       <div v-if="this.isSearching" class="search_results">
@@ -128,7 +128,7 @@ export default {
         return require("../assets/covers/default.jpg"); //return default
       }
       else{
-        return this.url +  item.cover; //return full path
+        return item.cover; //return full path
       }
     },
     //get the artist's picture path or return default picture id path null/empty
@@ -137,7 +137,7 @@ export default {
         return require("../assets/artists/default.png"); //return default
       }
       else{
-        return this.url +  artist.image; //return full path
+        return artist.image; //return full path
       }
     },
     signIn(){

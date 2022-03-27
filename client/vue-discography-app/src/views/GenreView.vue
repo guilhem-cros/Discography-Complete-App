@@ -73,9 +73,9 @@ export default {
           let url = this.$store.getters.getApiURL + "genres/" + idGenre;
           await axios.delete(url).catch(function (error) { //delete the genre in the DB
             Notiflix.Notify.failure(error.message, {closeButton : true});
-          }).then(
-          this.listGenres.splice(tabIndex, 1)).then( //delete the genre in listGenre -> avoid to fetch again the datas we alrdy have
-          this.showSuccess({message : "deleted", name : name}));
+          })
+          this.listGenres.splice(tabIndex, 1) //delete the genre in listGenre -> avoid to fetch again the datas we alrdy have
+          this.showSuccess({message : "deleted", name : name});
       },
       //display an alert "success" with message using 'values'
       showSuccess(values){

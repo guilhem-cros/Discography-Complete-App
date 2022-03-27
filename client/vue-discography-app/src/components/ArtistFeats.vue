@@ -41,7 +41,7 @@ export default {
               if(a.release < b.release){return 1}
               if(a.release > b.release){return -1}
               return 0;
-            }))).then(response => this.featsData = response,); //put data in this.feats
+            }))).then(response => this.featsData = response.slice(0,8),); //put data in this.feats
         },
         //push to album details page
         openAlbum(idAlb){
@@ -53,7 +53,7 @@ export default {
             return require("../assets/covers/default.jpg"); //return default
           }
           else{
-            return this.url +  item.cover; //return full path
+            return item.cover; //return full path
           }
         },
     },

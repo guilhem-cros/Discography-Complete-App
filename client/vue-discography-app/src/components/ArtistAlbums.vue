@@ -1,7 +1,7 @@
 <template>
   <div class="artistAlbums">
       <div class="allAlbuls">
-          <h3 id="ownAlbumHead">Last album released</h3>
+          <h3 id="ownAlbumHead">Last albums released</h3>
           <div class="uniAlbum" v-for="(album, index) in this.listAlbums" :key="index">
               <img :src="this.getCover(album)" class="ownCovers" :alt="album.title + '_cover'" @click="goToAlbum(album.id_album)"/>
               <h3 class="ownAlbumTitle" @click="goToAlbum(album.id_album)">{{album.title.toUpperCase()}}</h3>
@@ -48,7 +48,7 @@ export default {
             return require("../assets/covers/default.jpg"); //return default
           }
           else{
-            return this.url +  item.cover; //return full path
+            return item.cover; //return full path
           }
         },
     },

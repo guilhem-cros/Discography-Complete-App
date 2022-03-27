@@ -73,9 +73,10 @@ export default {
       //get data of the album
         async getAlbumDetails(){
             let url = this.$store.getters.getApiURL + "albums/" + this.idAlbum;
-            await axios.get(url).catch(function (error){ //get data or handling error
+            const response = await axios.get(url).catch(function (error){ //get data or handling error
                 Notiflix.Notify.failure(error.message)
-            }).then(response => this.albumData = response.data) //put data in this.albumData
+            })
+            this.albumData = response.data //put data in this.albumData
         },
         //get all song in the album
         async getSongsOfAlbum(){
@@ -91,16 +92,18 @@ export default {
         //get data of the album's artist
         async getMainArtist(){
             let url = this.$store.getters.getApiURL + "artists/" + this.albumData.artist;
-            await axios.get(url).catch(function(error){ //get data or handling error
+            const response = await axios.get(url).catch(function(error){ //get data or handling error
                 Notiflix.Notify.failure(error.message)
-            }).then(response=> (this.artist = response.data));//put data in this artist
+            })
+            this.artist = response.data;//put data in this artist
         },
         //get last comments of this album
         async getLastComs(){
             let url = this.$store.getters.getApiURL + "comments/last/" + this.idAlbum;
-            await axios.get(url).catch(function(error){ //get data or handling error
+            const response = await axios.get(url).catch(function(error){ //get data or handling error
                 Notiflix.Notify.failure(error.message)
-            }).then(response=> (this.lastComments = response.data)); //put data in this.lastComments
+            })
+            this.lastComments = response.data; //put data in this.lastComments
         },
         //load and get all data needed to the view
         async loadAll(){
@@ -120,7 +123,7 @@ export default {
                 return require("../assets/covers/default.jpg");
             }
             else{ //has no cover -> show default cover
-                return this.$store.getters.getApiURL + this.albumData.cover;
+                return this.albumData.cover;
             }
         },
         //redirect to artist details page
@@ -143,8 +146,8 @@ export default {
           await axios.delete(url).catch(function (error) { //delete the album or handling error
             let message = error.message;
             this.showError(message)
-          }).then(
-          this.$router.push({ name: 'home' })); //redirect to home page
+          })
+          this.$router.push({ name: 'artistDetails', params: {id : this.artist.id_artist}}); //redirect to home page
       },
       //show the song form
       openSongForm(){
@@ -277,6 +280,7 @@ export default {
     width : 300px;
     height: 300px;
     border: solid 2px #222;
+    object-fit: cover;
 }
 
 .tracklist{

@@ -42,16 +42,16 @@ export default {
           await axios.post(url, datas).catch(function (error) { //request and error handling during request
             let message = error.message;
             this.$emit('error', message); //emit error to display and alert
-          }).then(
-          this.$emit("updated", {name : this.name, message : "created"}));
+          })
+          this.$emit("updated", {name : this.name, message : "created"});
         }
         else{
           await axios.put(url + '/' + this.genre.id, datas).catch(function (error) { // request and error handling during request
             let message = error.message
             this.$emit('error', message); //emit error to dispay an alert
-          }).then(
-          this.$emit("updated", {name : this.name, message : "updated"}), //emit updated to display a success alert
-          this.$emit('goBackAndUpdate'));
+          })
+          this.$emit("updated", {name : this.name, message : "updated"}); //emit updated to display a success alert
+          this.$emit('goBackAndUpdate')
         }
         //resetting values
         this.name = "";
